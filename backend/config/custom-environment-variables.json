@@ -1,0 +1,4 @@
+{
+    "jwtKey": "COFFEE_LINK_JWT_KEY",
+    "bcryptKey": "COFFEE_LINK_BCRYPT_KEY"
+}

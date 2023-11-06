@@ -1,0 +1,13 @@
+{
+    "serverConfig":{
+        "host":"localhost",
+        "port":3001
+    },
+    "PgConnectConfig": {
+        "user": "",
+        "password": "",
+        "database":"",
+        "host":"localhost",
+        "port":5432
+    }
+}
