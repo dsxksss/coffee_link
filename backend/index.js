@@ -9,8 +9,9 @@ const fs = require('fs')
 const path = require('path');
 const app = express();
 const { registerControllers } = require('./registerControllers')
+const { connectToDatabase } = require('./database/db')
 
-figlet("Coffee  Link", function (err, data) {
+figlet(`Coffee  Links`, function (err, data) {
     if (err) {
         console.log("Something went wrong...");
         console.dir(err);
@@ -18,6 +19,7 @@ figlet("Coffee  Link", function (err, data) {
     }
     console.log(chalk.yellow(data));
     checkCofing();
+    connectToDatabase();
     const logStream = fs.createWriteStream(path.join(__dirname, "coffee_link_backend.log"), {
         flags: "a",
     });
@@ -29,7 +31,7 @@ figlet("Coffee  Link", function (err, data) {
     const serverConfigHost = config.get('serverConfig.host')
     const serverConfigPort = config.get('serverConfig.port');
     app.listen(serverConfigPort,serverConfigHost, () => {
-        console.log(chalk.green(`CoffeeLink backend server is running on port ${chalk.red(`${serverConfigHost}:${serverConfigPort}`)}`));
+        console.log("CoffeeLinks backend server is running on",chalk.green(`${chalk.bgRedBright(`${serverConfigHost}:${serverConfigPort}`)}`));
     });
 });
 

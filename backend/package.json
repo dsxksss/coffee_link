@@ -1,11 +1,11 @@
 {
-  "name": "coffee_link_backend",
+  "name": "coffee_links_backend",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index.js",
-    "dev-with-env": "export COFFEE_LINK_JWT_KEY=testKey&&export COFFEE_LINK_BCRYPT_KEY=testKey&&nodemon index.js"
+    "dev-with-env": "cross-env COFFEE_LINK_JWT_KEY=testKey COFFEE_LINK_BCRYPT_KEY=testKey nodemon index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -13,8 +13,10 @@
     "chalk": "4.1.2",
     "config": "^3.3.9",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "express": "^4.18.2",
     "figlet": "^1.7.0",
+    "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.1",

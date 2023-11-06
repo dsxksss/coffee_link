@@ -16,12 +16,15 @@ function checkCofing() {
   const defaultConfigs = [
     "serverConfig.host",
     "serverConfig.port",
-    "PgConnectConfig.port",
-    "PgConnectConfig.user",
-    "PgConnectConfig.password",
-    "PgConnectConfig.database",
-    "PgConnectConfig.host",
-    "PgConnectConfig.port",
+    "pgConnectConfig.port",
+    "pgConnectConfig.user",
+    "pgConnectConfig.password",
+    "pgConnectConfig.database",
+    "pgConnectConfig.host",
+    "pgConnectConfig.port",
+    "pgConnectConfig.maxConnections",
+    "pgConnectConfig.idleTimeoutMillis",
+    "pgConnectConfig.connectionTimeoutMillis"
   ];
   defaultConfigs.forEach((configName) => {
     if (!config.has(configName)) DEFAULT_MISSING_FIELDS.push(configName);
