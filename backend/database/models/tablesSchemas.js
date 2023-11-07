@@ -33,4 +33,14 @@ CREATE TABLE IF NOT EXISTS "CoffeePoints" (
 )`;
 
 
-module.exports = { Users, Links, Ratings, CoffeePoints }
+const Favorites = `
+CREATE TABLE IF NOT EXISTS "Favorites" (
+    "favorite_id" VARCHAR(255) PRIMARY KEY,
+    "username" VARCHAR(255) NOT NULL,
+    "linkID" VARCHAR(255) NOT NULL,
+    FOREIGN KEY ("username") REFERENCES "Users" ("username"),
+    FOREIGN KEY ("linkID") REFERENCES "Links" ("linkID")
+);`;
+
+
+module.exports = { Users, Links, Ratings, CoffeePoints, Favorites }

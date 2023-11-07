@@ -23,13 +23,12 @@ const validateUser = async (username, password) => {
         const text = `SELECT * FROM "Users" WHERE username = $1`;
         const values = [username];
         const result = await client.query(text, values);
-        
+
         if (result.rowCount <= 0) {
             return [false, undefined];
         }
 
         const validate = bcrypt.compareSync(`${password}-${config.get("bcryptKey")}`, result.rows[0].password);
-
 
         // Return tow parameters validate,and validateData
         return [

@@ -20,7 +20,7 @@ figlet(`Coffee  Links`,async function (err, data) {
     console.log(chalk.yellow(data));
     checkCofing();
     await Database.getInstance().connectToDatabase();
-    const logStream = fs.createWriteStream(path.join(__dirname, "coffee_link_backend.log"), {
+    const logStream = fs.createWriteStream(path.join(__dirname, "coffee_links_backend.log"), {
         flags: "a",
     });
     app.use(morgan("combined", { stream: logStream }));
