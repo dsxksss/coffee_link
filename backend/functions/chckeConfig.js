@@ -1,8 +1,8 @@
 const config = require("config"); //读取配置文件信息库
 
 function checkCofing() {
-  let ENV_MISSING_FIELDS = [];
-  let DEFAULT_MISSING_FIELDS = [];
+  const ENV_MISSING_FIELDS = [];
+  const DEFAULT_MISSING_FIELDS = [];
   let IS_MISSING = false;
 
   const envConfigs = [

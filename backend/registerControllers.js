@@ -16,8 +16,8 @@ function registerControllers(expressApp) {
             if (path.extname(file) === '.js') {
                 const controller = require(path.join(controllersPath, file));
                 // load the controller
-                expressApp.use(`/${file}`, controller);
-                console.log(`Controller [${chalk.blue(`/${file}`)}] loaded.`);
+                expressApp.use(`/${file.split(".")[0]}`, controller);
+                console.log(`Controller [${chalk.blue(`/${file.split(".")[0]}`)}] loaded.`);
             }
         });
     });

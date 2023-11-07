@@ -1,7 +1,7 @@
 const express = require('express');
 const config = require('config');
 const chalk = require('chalk');
-const bodyParser = require('body-parser');
+const multer = require('multer');
 const checkCofing = require("./functions/chckeConfig")
 const morgan = require('morgan');
 const figlet = require('figlet');
@@ -24,8 +24,8 @@ figlet(`Coffee  Links`, function (err, data) {
         flags: "a",
     });
     app.use(morgan("combined", { stream: logStream }));
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(multer().any());
+
     registerControllers(app);
 
     const serverConfigHost = config.get('serverConfig.host')
