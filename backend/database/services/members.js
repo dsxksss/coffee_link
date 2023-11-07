@@ -2,13 +2,13 @@ const bcrypt = require('bcrypt');
 const Database = require('../db');
 const config = require('config');
 
-const registerUser = async (username, password) => {
+const registerMember = async (memberName, password) => {
     const client = await Database.getInstance().pool.connect();
     try {
-        const text = `INSERT INTO "Users" VALUES ($1,$2,DEFAULT)`;
+        const text = `INSERT INTO "Members" VALUES ($1,$2,DEFAULT)`;
         const passwordSalt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(`${password}-${config.get("bcryptKey")}`, passwordSalt);
-        const values = [username, hashedPassword];
+        const values = [memberName, hashedPassword];
         await client.query(text, values);
     } catch (error) {
         throw new Error(error.message)
@@ -17,11 +17,11 @@ const registerUser = async (username, password) => {
     }
 }
 
-const validateUser = async (username, password) => {
+const validateMember = async (memberName, password) => {
     const client = await Database.getInstance().pool.connect();
     try {
-        const text = `SELECT * FROM "Users" WHERE username = $1`;
-        const values = [username];
+        const text = `SELECT * FROM "Members" WHERE "memberName" = $1`;
+        const values = [memberName];
         const result = await client.query(text, values);
 
         if (result.rowCount <= 0) {
@@ -35,7 +35,7 @@ const validateUser = async (username, password) => {
             validate,
             // If validate not true, them return an undefined value
             result.rows ? {
-                username: result.rows[0].username,
+                memberName: result.rows[0].memberName,
                 createdAt: result.rows[0].createdAt
             } : undefined
         ];
@@ -46,4 +46,4 @@ const validateUser = async (username, password) => {
     }
 }
 
-module.exports = { registerUser, validateUser }
+module.exports = { registerMember,  validateMember }

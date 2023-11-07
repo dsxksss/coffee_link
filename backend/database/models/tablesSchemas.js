@@ -1,6 +1,6 @@
-const Users = `
-CREATE TABLE IF NOT EXISTS "Users" (
-  "username" VARCHAR(255) PRIMARY KEY,
+const Members = `
+CREATE TABLE IF NOT EXISTS "Members" (
+  "memberName" VARCHAR(255) PRIMARY KEY,
   "password" VARCHAR(255) NOT NULL,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
@@ -17,30 +17,30 @@ CREATE TABLE IF NOT EXISTS "Links" (
 const Ratings = `
 CREATE TABLE IF NOT EXISTS "Ratings" (
     "ratingID" VARCHAR(255) PRIMARY KEY,
-    "username" VARCHAR(255) NOT NULL,
+    "memberName" VARCHAR(255) NOT NULL,
     "linkID" VARCHAR(255) NOT NULL,
     "ratingScore" INTEGER NOT NULL,
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("username") REFERENCES "Users" ("username"),
+    FOREIGN KEY ("memberName") REFERENCES "Members" ("memberName"),
     FOREIGN KEY ("linkID") REFERENCES "Links" ("linkID")
 )`;
 
 const CoffeePoints = `
 CREATE TABLE IF NOT EXISTS "CoffeePoints" (
-    "username" VARCHAR(255) PRIMARY KEY,
+    "memberName" VARCHAR(255) PRIMARY KEY,
     "points" INTEGER,
-    FOREIGN KEY ("username") REFERENCES "Users" ("username")
+    FOREIGN KEY ("memberName") REFERENCES "Members" ("memberName")
 )`;
 
 
 const Favorites = `
 CREATE TABLE IF NOT EXISTS "Favorites" (
     "favorite_id" VARCHAR(255) PRIMARY KEY,
-    "username" VARCHAR(255) NOT NULL,
+    "memberName" VARCHAR(255) NOT NULL,
     "linkID" VARCHAR(255) NOT NULL,
-    FOREIGN KEY ("username") REFERENCES "Users" ("username"),
+    FOREIGN KEY ("memberName") REFERENCES "Members" ("memberName"),
     FOREIGN KEY ("linkID") REFERENCES "Links" ("linkID")
 );`;
 
 
-module.exports = { Users, Links, Ratings, CoffeePoints, Favorites }
+module.exports = { Members, Links, Ratings, CoffeePoints, Favorites }
