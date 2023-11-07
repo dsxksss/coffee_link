@@ -1,38 +1,36 @@
-const users = `
+const Users = `
 CREATE TABLE IF NOT EXISTS "Users" (
-  "userID" SERIAL PRIMARY KEY,
-  "username" VARCHAR(255) NOT NULL,
+  "username" VARCHAR(255) PRIMARY KEY,
   "password" VARCHAR(255) NOT NULL,
-  "email" VARCHAR(255) NOT NULL,
-  "createdAt" TIMESTAMP NOT NULL
+  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
 
-const links = `
+const Links = `
 CREATE TABLE IF NOT EXISTS "Links" (
-    "linkID" SERIAL PRIMARY KEY,
+    "linkID" VARCHAR(255) PRIMARY KEY,
     "linkURL" VARCHAR(255) NOT NULL,
     "linkTitle" VARCHAR(255) NOT NULL,
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "hidden" BOOLEAN DEFAULT FALSE
 )`;
 
-const ratings = `
+const Ratings = `
 CREATE TABLE IF NOT EXISTS "Ratings" (
-    "ratingID" SERIAL PRIMARY KEY,
-    "userID" INTEGER NOT NULL,
-    "linkID" INTEGER NOT NULL,
+    "ratingID" VARCHAR(255) PRIMARY KEY,
+    "username" VARCHAR(255) NOT NULL,
+    "linkID" VARCHAR(255) NOT NULL,
     "ratingScore" INTEGER NOT NULL,
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY ("userID") REFERENCES "Users" ("userID"),
+    FOREIGN KEY ("username") REFERENCES "Users" ("username"),
     FOREIGN KEY ("linkID") REFERENCES "Links" ("linkID")
 )`;
 
-const coffeePoints = `
+const CoffeePoints = `
 CREATE TABLE IF NOT EXISTS "CoffeePoints" (
-    "userID" INTEGER PRIMARY KEY,
+    "username" VARCHAR(255) PRIMARY KEY,
     "points" INTEGER,
-    FOREIGN KEY ("userID") REFERENCES "Users" ("userID")
+    FOREIGN KEY ("username") REFERENCES "Users" ("username")
 )`;
 
 
-module.exports = { users, links, ratings, coffeePoints }
+module.exports = { Users, Links, Ratings, CoffeePoints }

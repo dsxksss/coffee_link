@@ -9,9 +9,9 @@ const fs = require('fs')
 const path = require('path');
 const app = express();
 const { registerControllers } = require('./registerControllers')
-const { connectToDatabase } = require('./database/db')
+const Database = require('./database/db')
 
-figlet(`Coffee  Links`, function (err, data) {
+figlet(`Coffee  Links`,async function (err, data) {
     if (err) {
         console.log("Something went wrong...");
         console.dir(err);
@@ -19,7 +19,7 @@ figlet(`Coffee  Links`, function (err, data) {
     }
     console.log(chalk.yellow(data));
     checkCofing();
-    connectToDatabase();
+    await Database.getInstance().connectToDatabase();
     const logStream = fs.createWriteStream(path.join(__dirname, "coffee_link_backend.log"), {
         flags: "a",
     });
