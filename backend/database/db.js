@@ -3,7 +3,7 @@ const config = require('config');
 const tablesSchemas = require('./models/tablesSchemas');
 const chalk = require('chalk');
 
-const dbInstance = new Pool({
+let dbInstance = new Pool({
     database: 'postgres', // the default database name
     user: config.get("pgConnectConfig.user"),
     password: config.get("pgConnectConfig.password"),
@@ -34,12 +34,14 @@ async function checkDatabaseExists() {
 async function createDatabase() {
     const client = await dbInstance.connect();
     try {
-        // 创建数据库
         await client.query(`CREATE DATABASE ${config.get("pgConnectConfig.database")}`);
     } catch (error) {
         throw new Error(`Error createDatabase failed: ${error}`)
     } finally {
         client.release();
+
+        // Wait for the old connection release;
+        await dbInstance.end();
     }
 }
 
@@ -65,9 +67,18 @@ async function connectToDatabase() {
             await createDatabase();
         }
 
-        // Update the database name of the connection configuration
-        dbInstance.options.database = config.get("pgConnectConfig.database");
-
+        // Update the DB instance
+        dbInstance = new Pool({
+            database: config.get("pgConnectConfig.database").toLowerCase(), // the default database name
+            user: config.get("pgConnectConfig.user"),
+            password: config.get("pgConnectConfig.password"),
+            host: config.get("pgConnectConfig.host"),
+            port: config.get("pgConnectConfig.port"),
+            max: config.get("pgConnectConfig.maxConnections"),
+            idleTimeoutMillis: config.get("pgConnectConfig.idleTimeoutMillis"),
+            connectionTimeoutMillis: config.get("pgConnectConfig.connectionTimeoutMillis"),
+        });
+        
         // synchronized tables
         await syncTables();
     } catch (error) {
