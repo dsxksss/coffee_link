@@ -31,7 +31,7 @@ figlet(`Coffee  Links`,async function (err, data) {
     const serverConfigHost = config.get('serverConfig.host')
     const serverConfigPort = config.get('serverConfig.port');
     app.listen(serverConfigPort,serverConfigHost, () => {
-        console.log("CoffeeLinks backend server is running on",chalk.green(`${chalk.bgRedBright(`${serverConfigHost}:${serverConfigPort}`)}`));
+        console.log("CoffeeLinks backend server is running on",chalk.green(`${chalk.blueBright(`${serverConfigHost}:${serverConfigPort}`)}`));
     });
 });
 
