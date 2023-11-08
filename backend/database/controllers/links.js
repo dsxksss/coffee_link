@@ -1,13 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
-const { createLink, updateLink, deleteLink } = require('../services/links');
+const { getAllLinks, createLink, updateLink, deleteLink } = require('../services/links');
 const auth = require('../middlewares/auth');
+
+// Get all links
+router.get('/', async (_, res) => {
+    try {
+        const data = await getAllLinks();
+        res.send({ data, msg: "Get all links successfully" });
+    } catch (error) {
+        res.status(400).send({ msg: `Get all link failed! ${error}` })
+    }
+})
+
 
 // Create link
 router.post('/', auth, async (req, res) => {
     const validateSchema = Joi.object({
-        linkURL: Joi.string().pattern(new RegExp('^https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,30}(/[a-zA-Z0-9_\\-./?%&=]*)?$')).min(5).max(250).required(),
+        linkURL: Joi.string().pattern(new RegExp('^https?://.+?$')).min(5).max(250).required(),
         linkTitle: Joi.string().min(2).max(250).required(),
         linkDescription: Joi.string().min(5).max(250).required(),
         hidden: Joi.boolean().required(),
@@ -46,8 +57,8 @@ router.delete('/', auth, async (req, res) => {
     });
     try {
         const { linkID } = await validateSchema.validateAsync(req.body);
-         await deleteLink(linkID, req.tokenData.memberName);
-        res.send({msg: "Delete Link successfully" });
+        await deleteLink(linkID, req.tokenData.memberName);
+        res.send({ msg: "Delete Link successfully" });
     } catch (error) {
         res.status(400).send({ msg: `Delete Link failed! ${error}` })
     }

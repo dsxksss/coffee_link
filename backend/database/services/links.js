@@ -1,6 +1,19 @@
 const Database = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
+const getAllLinks = async () => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        const text = `SELECT * FROM "Links"`;
+        const result = await client.query(text);
+        return result.rows;
+    } catch (error) {
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+};
+
 const createLink = async (linkURL, linkTitle, linkDescription, creator, hidden) => {
     const client = await Database.getInstance().pool.connect();
     try {
@@ -70,7 +83,7 @@ const deleteLink = async (linkID, creatorName) => {
         const text = `DELETE FROM "Links" WHERE "linkID" = $1`;
         const values = [linkID];
         await client.query(text, values);
-        
+
     } catch (error) {
         throw new Error(error.message);
     } finally {
@@ -78,4 +91,4 @@ const deleteLink = async (linkID, creatorName) => {
     }
 }
 
-module.exports = { createLink, verifyCreator, updateLink, deleteLink };
+module.exports = { getAllLinks,createLink, verifyCreator, updateLink, deleteLink };
