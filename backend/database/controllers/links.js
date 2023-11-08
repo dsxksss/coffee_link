@@ -10,7 +10,7 @@ router.get('/', async (_, res) => {
         const data = await getAllLinks();
         res.send({ data, msg: "Get all links successfully" });
     } catch (error) {
-        res.status(400).send({ msg: `Get all link failed! ${error}` })
+        res.status(400).send({ msg: `Get all links failed! ${error}` })
     }
 })
 
