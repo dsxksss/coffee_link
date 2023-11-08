@@ -5,7 +5,7 @@ const { registerMember, validateMember, updateMember } = require('../services/me
 
 const baseValidateSchema = Joi.object({
     memberName: Joi.string().min(3).max(30).required(),
-    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
 });
 
 // Member register 
@@ -39,16 +39,16 @@ router.put('/', async (req, res) => {
     try {
         const validateSchema = Joi.object({
             memberName: Joi.string().min(3).max(30).required(),
-            password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+            password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
             newMemberName: Joi.string().min(3).max(30).required(),
-            newPassword: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+            newPassword: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
         });
         const { memberName, password, newMemberName, newPassword } = await validateSchema.validateAsync(req.body);
         await updateMember(memberName, password, newMemberName, newPassword);
 
-        res.send({ msg: "Update member data successfully" });
+        res.send({ msg: "Update member information successfully" });
     } catch (error) {
-        res.status(400).send({ msg: `Update member data failed ${error}` });
+        res.status(400).send({ msg: `Update member information failed ${error}` });
     }
 })
 

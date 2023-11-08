@@ -1,17 +1,17 @@
-const bcrypt = require('bcrypt');
 const Database = require('../db');
+const jwt = require("jsonwebtoken");
 const config = require('config');
 const { encryptionData, compareBcryptData } = require('../../utils/bcryptData')
 
 const registerMember = async (memberName, password) => {
     const client = await Database.getInstance().pool.connect();
     try {
-        const text = `INSERT INTO "Members" VALUES ($1,$2,DEFAULT)`;
+        const text = `INSERT INTO "Members" VALUES ($1,$2,$3,DEFAULT)`;
         const hashedPassword = encryptionData(password);
-        const values = [memberName, hashedPassword];
+        const values = [memberName, hashedPassword, 0];
         await client.query(text, values);
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
     } finally {
         client.release();
     }
@@ -28,18 +28,40 @@ const validateMember = async (memberName, password) => {
             return [false, undefined];
         }
         const validate = compareBcryptData(password, result.rows[0].password);
+        const authToken = jwt.sign({ memberName: result.rows[0].memberName },
+            config.get("jwtKey"),
+        );
 
         // Return tow parameters validate,and validateData
         return [
             validate,
             // If validate not true, them return an undefined value
             result.rows ? {
-                memberName: result.rows[0].memberName,
-                createdAt: result.rows[0].createdAt
+                authToken,
+                memberCreatedAt: result.rows[0].createdAt
             } : undefined
         ];
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+}
+
+const isMembersExist = async (memberName) => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        const text = `SELECT * FROM "Members" WHERE "memberName" = $1`;
+        const values = [memberName];
+        const result = await client.query(text, values);
+
+        if (result.rowCount <= 0) {
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        throw new Error(error.message);
     } finally {
         client.release();
     }
@@ -57,13 +79,13 @@ const updateMember = async (memberName, password, newMbmberName, newPassword) =>
 
         const text = `UPDATE "Members" SET "memberName" = $1, "password" = $2 WHERE "memberName" = $3`;
         const hashedPassword = encryptionData(newPassword);
-        const values = [newMbmberName, hashedPassword, memberName]; 
+        const values = [newMbmberName, hashedPassword, memberName];
         await client.query(text, values);
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
     } finally {
         client.release();
     }
 }
 
-module.exports = { registerMember, validateMember, updateMember }
+module.exports = { registerMember, validateMember, updateMember, isMembersExist }
