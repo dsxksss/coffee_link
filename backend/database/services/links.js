@@ -52,8 +52,7 @@ const updateLink = async (linkID, creatorName, newLinkURL, newLinkTitle, newLink
     const client = await Database.getInstance().pool.connect();
     try {
         const verify = await verifyCreator(linkID, creatorName);
-
-        console.log(verify);
+        
         if (!verify) {
             throw new Error("Insufficient permissions");
         }
