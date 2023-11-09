@@ -5,8 +5,14 @@ const getAllLinks = async () => {
     const client = await Database.getInstance().pool.connect();
     try {
         const text = `
-        SELECT "Links".*,"Members".points FROM "Links" INNER
-        JOIN "Members" ON "Links"."creator" = "Members"."memberName"`;
+        SELECT "Links".*, "Members"."points", 
+        SUM("Ratings"."ratingScore") AS "averageRatingScore", 
+        COUNT("Ratings"."ratingScore") AS "totalMembersOfRating"
+        FROM "Links"
+        INNER JOIN "Members" ON "Links"."creator" = "Members"."memberName"
+        INNER JOIN "Ratings" ON "Links"."linkID" = "Ratings"."linkID"
+        GROUP BY "Links"."linkID", "Members"."points";`;
+
         const result = await client.query(text);
         return result.rows;
     } catch (error) {
