@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const { isMembersExist } = require('../services/members');
+const { isMembersExist } = require('../services/general');
 
 module.exports = async function (req, res, next) {
     const token = req.header("X-Auth-Token");

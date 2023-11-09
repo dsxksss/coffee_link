@@ -48,25 +48,6 @@ const validateMember = async (memberName, password) => {
     }
 }
 
-const isMembersExist = async (memberName) => {
-    const client = await Database.getInstance().pool.connect();
-    try {
-        const text = `SELECT * FROM "Members" WHERE "memberName" = $1`;
-        const values = [memberName];
-        const result = await client.query(text, values);
-
-        if (result.rowCount <= 0) {
-            return false;
-        }
-
-        return true;
-    } catch (error) {
-        throw new Error(error.message);
-    } finally {
-        client.release();
-    }
-}
-
 const updateMember = async (memberName, password, newMbmberName, newPassword) => {
     const client = await Database.getInstance().pool.connect();
     try {
@@ -88,4 +69,4 @@ const updateMember = async (memberName, password, newMbmberName, newPassword) =>
     }
 }
 
-module.exports = { registerMember, validateMember, updateMember, isMembersExist }
+module.exports = { registerMember, validateMember, updateMember }
