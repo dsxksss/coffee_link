@@ -31,10 +31,9 @@ CREATE TABLE IF NOT EXISTS "Ratings" (
 
 const Favorites = `
 CREATE TABLE IF NOT EXISTS "Favorites" (
-    "favoriteID" VARCHAR(255) PRIMARY KEY,
-    "memberName" VARCHAR(255) NOT NULL,
-    "linkID" VARCHAR(255) NOT NULL,
-    FOREIGN KEY ("memberName") REFERENCES "Members" ("memberName"),
+    "linkID" VARCHAR(255) PRIMARY KEY,
+    "collector" VARCHAR(255) NOT NULL,
+    FOREIGN KEY ("collector") REFERENCES "Members" ("memberName"),
     FOREIGN KEY ("linkID") REFERENCES "Links" ("linkID")
 );`;
 
