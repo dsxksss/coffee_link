@@ -4,6 +4,8 @@ const Joi = require('joi');
 const { linkRating } = require('../services/ratings');
 const auth = require('../middlewares/auth');
 
+// TODO 待实现根据linkID和rater获取该评分人评价该link的分数
+
 // Link rating
 router.post('/', auth, async (req, res) => {
     const validateSchema = Joi.object({
