@@ -4,7 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 const getAllLinks = async () => {
     const client = await Database.getInstance().pool.connect();
     try {
-        const text = `SELECT * FROM "Links"`;
+        const text = `
+        SELECT "Links".*,"Members".points FROM "Links" INNER
+        JOIN "Members" ON "Links"."creator" = "Members"."memberName"`;
         const result = await client.query(text);
         return result.rows;
     } catch (error) {
