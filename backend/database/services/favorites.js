@@ -40,8 +40,9 @@ const getFavorites = async (collector)=>{
     const client = await Database.getInstance().pool.connect();
     try {
         const text = `
-        SELECT * FROM "Links" INNER JOIN "Favorites" 
-        ON "Links"."linkID" = "Favorites"."linkID" 
+        SELECT "Links".*,"Favorites".*,"Members".points FROM "Links" INNER
+        JOIN "Favorites" ON "Links"."linkID" = "Favorites"."linkID"
+        JOIN "Members" ON "Links"."creator" = "Members"."memberName"
         WHERE EXISTS (SELECT * FROM "Favorites" WHERE "collector" = $1)`;
         const values = [collector];
         const result = await client.query(text, values);
