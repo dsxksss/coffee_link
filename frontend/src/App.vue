@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 
 <template>
   <div>
+    <font-awesome-icon icon="fa-solid fa-user-secret" />
     <Button>Click me</Button>
   </div>
 </template>
