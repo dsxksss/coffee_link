@@ -55,4 +55,40 @@ const isLinkExistFavoritesTable = async (linkID) => {
     }
 }
 
-module.exports = { isLinkExistFavoritesTable, isLinkExistLinksTable, isMembersExist };
+const incrementalCoffeePoints = async (memberName) => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        const exist = await isMembersExist(memberName);
+        if (!exist) {
+            throw new Error("Member does not exist");
+        }
+
+        const text = `UPDATE "Members" SET "points" = "points" + $1`;
+        const values = [20];
+        await client.query(text, values);
+    } catch (error) {
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+}
+
+const decrementCoffeePoints = async (memberName) => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        const exist = await isMembersExist(memberName);
+        if (!exist) {
+            throw new Error("Member does not exist");
+        }
+
+        const text = `UPDATE "Members" SET "points" = "points" - $1`;
+        const values = [20];
+        await client.query(text, values);
+    } catch (error) {
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+}
+
+module.exports = { isLinkExistFavoritesTable, isLinkExistLinksTable, isMembersExist, decrementCoffeePoints, incrementalCoffeePoints };
