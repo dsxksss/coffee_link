@@ -1,0 +1,10 @@
+{
+  "name": "coffee_links",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start-backend": "cd backend && npm install && npm run dev-with-env",
+    "start-frontend": "cd frontend && npm install && npm run dev"
+  }
+}

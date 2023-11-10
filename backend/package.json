@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon index.js",
-    "dev-with-env": "cross-env COFFEE_LINK_JWT_KEY=testKey COFFEE_LINK_BCRYPT_KEY=testKey nodemon index.js"
+    "dev-with-env": "cross-env COFFEE_LINK_JWT_KEY=testKey COFFEE_LINK_BCRYPT_KEY=testKey node index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
