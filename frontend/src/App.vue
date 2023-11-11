@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { useToast } from "vue-toastification";
-
-// Get toast interface
-const toast = useToast();
-
-function showToast() {
-  toast("I'm a toast!")
-}
+// import { useToast } from "vue-toastification";
+// const toast = useToast();
+import Nav from './components/Nav.vue';
 
 </script>
 
 <template>
-  <div>
-    <font-awesome-icon icon="fa-solid fa-user-secret" />
-    <Button @click="showToast">Click me</Button>
-  </div>
+  <main class="flex h-screen bg-[#121419]">
+    <Nav></Nav>
+  </main>
 </template>

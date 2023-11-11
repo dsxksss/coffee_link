@@ -12,10 +12,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faMugHot,faDoorOpen,faDisease,faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faUserSecret)
+library.add(faMugHot, faDoorOpen, faDisease,faRightToBracket)
 
 const options: PluginOptions = {
     // You can set your default options here
