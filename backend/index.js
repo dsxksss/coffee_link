@@ -5,6 +5,7 @@ const multer = require('multer');
 const checkCofing = require("./utils/chckeConfig")
 const morgan = require('morgan');
 const figlet = require('figlet');
+const cors = require('cors');
 const fs = require('fs')
 const path = require('path');
 const app = express();
@@ -23,6 +24,7 @@ figlet(`Coffee  Links`,async function (err, data) {
     const logStream = fs.createWriteStream(path.join(__dirname, "coffee_links_backend.log"), {
         flags: "a",
     });
+    app.use(cors());
     app.use(morgan("combined", { stream: logStream }));
     app.use(multer().any());
 
