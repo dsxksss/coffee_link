@@ -1,6 +1,6 @@
 import App from './App.vue'
 import { createApp } from 'vue'
-import './assets/index.css'
+import './index.css'
 import Toast, { PluginOptions } from "vue-toastification";
 // Import the CSS or use your own!
 import "vue-toastification/dist/index.css";
