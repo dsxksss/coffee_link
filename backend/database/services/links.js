@@ -1,12 +1,31 @@
 const Database = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
-const getAllLinks = async () => {
+const getGlobalRatingStats = async () => {
     const client = await Database.getInstance().pool.connect();
     try {
         const text = `
+        SELECT ROUND(AVG("ratingScore"),1) AS "globalAverageRating", 
+        COUNT("rater") AS "totalRatingMembers" 
+        FROM "Ratings";`;
+
+        const result = await client.query(text);
+        return result.rows[0];
+    } catch (error) {
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+}
+
+const getAllLinks = async () => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        console.log();
+
+        const text = `
         SELECT "Links".*, "Members"."points", 
-        SUM("Ratings"."ratingScore") AS "averageRatingScore", 
+        ROUND(AVG("Ratings"."ratingScore"),1) AS "averageRatingScore",
         COUNT("Ratings"."ratingScore") AS "totalMembersOfRating"
         FROM "Links"
         INNER JOIN "Members" ON "Links"."creator" = "Members"."memberName"
@@ -14,6 +33,14 @@ const getAllLinks = async () => {
         GROUP BY "Links"."linkID", "Members"."points";`;
 
         const result = await client.query(text);
+
+        const ratingStats = await getGlobalRatingStats();
+
+        result.rows.forEach(element => {
+            element["globalAverageRating"] = ratingStats.globalAverageRating;
+            element["totalRatingMembers"] = ratingStats.totalRatingMembers;
+        });
+
         return result.rows;
     } catch (error) {
         throw new Error(error.message);
@@ -60,7 +87,7 @@ const updateLink = async (linkID, creatorName, newLinkURL, newLinkTitle, newLink
     const client = await Database.getInstance().pool.connect();
     try {
         const verify = await verifyCreator(linkID, creatorName);
-        
+
         if (!verify) {
             throw new Error("Insufficient permissions");
         }
@@ -98,4 +125,4 @@ const deleteLink = async (linkID, creatorName) => {
     }
 }
 
-module.exports = { getAllLinks,createLink, verifyCreator, updateLink, deleteLink };
+module.exports = { getAllLinks, createLink, verifyCreator, updateLink, deleteLink };

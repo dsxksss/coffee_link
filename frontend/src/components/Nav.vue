@@ -56,7 +56,7 @@ function logOut() {
             </div>
 
             <button class="flex btn btn-ghost btn-square items-center border-[2px] border-[#242427] rounded-lg">
-                <font-awesome-icon icon="fa-solid fa-disease" class="text-[#fff0dd] h-6 w-6" />
+                <font-awesome-icon icon="fa-solid fa-disease" class="text-orange-300  h-6 w-6" />
             </button>
         </div>
     </div>
