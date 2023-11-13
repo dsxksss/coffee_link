@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import LoginDailog from "./LoginDailog.vue";
+import RegisterDailog from "./RegisterDailog.vue";
 import { onMounted, ref } from "vue"
 
 const loginDialogOpen = ref(false);
+const registerDialogOpen = ref(false);
 const isLogin = ref(false);
 
 onMounted(() => {
@@ -43,11 +45,14 @@ function logOut() {
                         <span class="text-[14px] font-bold">Log In</span>
                     </button>
                 </LoginDailog>
-                <button
-                    class="flex items-center text-[#fff0dd] bg-[#3dafa5] hover:bg-[#3dafa5]/50 btn rounded-lg px-6 py-2">
-                    <font-awesome-icon icon="fa-solid fa-door-open" class="h-6 w-6" />
-                    <span class="text-[14px] font-bold">Sign Up</span>
-                </button>
+            
+                <RegisterDailog :open="registerDialogOpen" @onClose="registerDialogOpen = false" @onSubmitSuccess="isLogin = true" >
+                    <button @click="() => { registerDialogOpen = true }"
+                        class="flex items-center text-[#fff0dd] bg-[#3dafa5] hover:bg-[#3dafa5]/50 btn rounded-lg px-6 py-2">
+                        <font-awesome-icon icon="fa-solid fa-door-open" class="h-6 w-6" />
+                        <span class="text-[14px] font-bold">Sign Up</span>
+                    </button>
+                </RegisterDailog>
             </div>
 
             <button class="flex btn btn-ghost btn-square items-center border-[2px] border-[#242427] rounded-lg">

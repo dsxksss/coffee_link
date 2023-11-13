@@ -12,8 +12,8 @@ const baseValidateSchema = Joi.object({
 router.post('/register', async (req, res) => {
     try {
         const { memberName, password } = await baseValidateSchema.validateAsync(req.body);
-        await registerMember(memberName, password);
-        res.send({ msg: "Register successfully" });
+        const data = await registerMember(memberName, password);
+        res.send({ data, msg: "Register successfully" });
     } catch (error) {
         res.status(400).send({ msg: `Register failed ${error}` })
     }

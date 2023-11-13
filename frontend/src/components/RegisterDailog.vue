@@ -18,15 +18,21 @@ const emit = defineEmits(['onClose', 'onSubmitSuccess'])
 
 const toast = useToast();
 const memberName = ref('');
-const password = ref('');
+const password1 = ref('');
+const password2 = ref('');
 
 function clearData() {
     memberName.value = '';
-    password.value = '';
+    password1.value = '';
+    password2.value = '';
 }
 
-async function handleLogin() {
-    const result = await memberAPI.login(memberName.value, password.value);
+async function handleRegister() {
+    if(password1.value !== password2.value){
+        return toast.error("Confirmation password is not identical")
+    }
+
+    const result = await memberAPI.register(memberName.value, password1.value);
     const objData = JSON.parse(result.data);
     const data = objData.data;
     const msg = objData.msg;
@@ -51,33 +57,45 @@ async function handleLogin() {
             <DialogOverlay @click.self="emit('onClose')"
                 class="z-10 bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0">
                 <DialogContent
-                    class="relative flex flex-col items-center justify-start z-20 data-[state=open]:animate-contentShow top-[50%] left-[50%] max-h-[85vh] h-[50vh] w-[90vw] max-w-[650px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#1d2129] p-[25px] focus:outline-none">
-                    <form class="flex flex-col items-center" @submit.prevent="handleLogin">
-                        <div class="space-x-4 text-[#fff0dd] mt-6">
+                    class="relative flex flex-col items-center justify-start z-20 data-[state=open]:animate-contentShow h-[70vh] top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#1d2129] p-[25px] focus:outline-none">
+                    <form class="flex flex-col items-center" @submit.prevent="handleRegister">
+                        <div class="space-x-4 text-[#fff0dd] mt-2">
+                            <span class="text-[3rem] font-bold">Welcome To</span>
+                        </div>
+                        <div class="space-x-4 text-[#fff0dd]">
                             <font-awesome-icon icon="fa-solid fa-link" class="h-8 w-8" />
-                            <span class="text-3xl font-bold">Coffee Links</span>
+                            <span class="text-3xl font-bold">Coffee Links ! ! !</span>
                             <font-awesome-icon icon="fa-solid fa-mug-hot" class="h-8 w-8" />
                         </div>
-                        <div class="form-control w-full max-w-xs mt-7">
+                        <div class="form-control w-full max-w-xs mt-5">
                             <label class="label">
-                                <span class="label-text font-bold">Member Name</span>
+                                <span class="label-text font-bold">Your Member Name</span>
                             </label>
                             <input v-model="memberName" required type="text" placeholder="" maxlength=""
                                 class="input border-gray-500 border-2 w-full max-w-xs" />
                         </div>
                         <div class="form-control w-full max-w-xs mt-4">
                             <label class="label">
-                                <span class="label-text font-bold">Password</span>
+                                <span class="label-text font-bold">Set Your Password</span>
                             </label>
-                            <input v-model="password" required type="password" placeholder="" maxlength=""
+                            <input v-model="password1" required type="password" placeholder="" maxlength=""
+                                class="input border-gray-500 border-2 w-full max-w-xs" />
+                            <label class="label">
+                            </label>
+                        </div>
+                        <div class="form-control w-full max-w-xs mt-4">
+                            <label class="label">
+                                <span class="label-text font-bold">Please Reenter Your Password</span>
+                            </label>
+                            <input v-model="password2" required type="password" placeholder="" maxlength=""
                                 class="input border-gray-500 border-2 w-full max-w-xs" />
                             <label class="label">
                             </label>
                         </div>
                         <button type="submit"
-                            class="flex mt-6 items-center text-[#fff0dd] bg-[#3dafa5] hover:bg-[#3dafa5]/50 btn rounded-lg px-6 py-2">
+                            class="flex mt-4 items-center text-[#fff0dd] bg-[#3dafa5] hover:bg-[#3dafa5]/50 btn rounded-lg px-6 py-2">
                             <font-awesome-icon icon="fa-solid fa-right-to-bracket" class="h-6 w-6" />
-                            <span class="text-[14px] font-bold">Log In</span>
+                            <span class="text-[14px] font-bold">Sign Up</span>
                         </button>
                         <button @click="emit('onClose')" class="btn btn-sm btn-square btn-ghost absolute top-1 right-1">
                             <font-awesome-icon icon="fa-solid fa-close" class="h-6 w-6" />

@@ -1,15 +1,31 @@
 const Database = require('../db');
 const jwt = require("jsonwebtoken");
 const config = require('config');
+const { isMembersExist } = require('../services/general')
 const { encryptionData, compareBcryptData } = require('../../utils/bcryptData')
 
 const registerMember = async (memberName, password) => {
     const client = await Database.getInstance().pool.connect();
     try {
+        const exist = await isMembersExist(memberName);
+        if(exist) {
+            throw new Error(`Member ${memberName} already exists`);
+        }
+
         const text = `INSERT INTO "Members" VALUES ($1,$2,$3,DEFAULT)`;
         const hashedPassword = encryptionData(password);
         const values = [memberName, hashedPassword, 0];
         await client.query(text, values);
+        
+        await validateMember(memberName, password);
+        const [validate, data] = await validateMember(memberName, password);
+
+        if (!validate) {
+            throw new Error("Validate failed!");
+        }
+
+        return data;
+        
     } catch (error) {
         throw new Error(error.message);
     } finally {
