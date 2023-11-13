@@ -22,7 +22,7 @@ function logOut() {
 </script>
 
 <template>
-    <div class="flex w-screen justify-between items-center h-20 mx-8 select-none">
+    <div class="flex w-full justify-between items-center h-20 px-8 select-none">
         <div class="space-x-2 text-[#fff0dd]">
             <font-awesome-icon icon="fa-solid fa-mug-hot" class="h-10 w-10" />
             <span class="text-3xl font-bold">Coffee Links</span>
