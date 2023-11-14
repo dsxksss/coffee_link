@@ -7,13 +7,13 @@ import { Link } from '../interfaces/link';
 const props = defineProps({
   link: Link,
   points: Number,
-  auth: Boolean,
   averageRatingScore: String,
   totalMembersOfRating: String,
 });
 
 const toast = useToast();
 const favorites = inject('favorites', ref([]));
+const auth = inject('auth', ref(false));
 const isFavorite = ref(false);
 
 function updateIsFavorite() {

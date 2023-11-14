@@ -4,7 +4,7 @@
 import Nav from '../components/Nav.vue';
 import LinkCard from '../components/LinkCard.vue';
 import linkApi from '../api/links';
-import { onMounted, ref, provide, reactive } from 'vue';
+import { onMounted, ref, provide } from 'vue';
 import { useToast } from "vue-toastification";
 import { Link } from '../interfaces/link';
 import { bayesianRating } from '../utils/bayesian';
@@ -13,10 +13,11 @@ import favoritesAPI from '../api/favorites';
 
 const toast = useToast();
 const links = ref([]);
-const auth = ref(false);
 
+const auth = ref(false);
 const favorites = ref([]);
-provide('favorites', reactive(favorites));
+provide('favorites', favorites);
+provide('auth', {auth, authStatusUpdate });
 
 async function fetchCoffeeLinksData() {
     const result = await linkApi.getAllCoffeeLinks();
@@ -83,7 +84,7 @@ onMounted(async () => {
 <template>
     <main class="flex flex-col justify-start items-start h-screen w-screen bg-[#121419] overflow-hidden">
         <Nav @authUpdate="authStatusUpdate"></Nav>
-        <div
+        <div v-if="links.length > 0"
             class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full grid-cols-1 justify-start 2xl:justify-items-center overflow-y-scroll scroll-smooth">
             <LinkCard v-for="link in links" :key="link['linkID']" :link="new Link({
                 linkID: link['linkID'],
@@ -94,8 +95,16 @@ onMounted(async () => {
                 hidden: link['hidden'],
                 createdAt: link['createdAt']
             })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
-                :totalMembersOfRating="link['totalMembersOfRating']" :auth="auth">
+                :totalMembersOfRating="link['totalMembersOfRating']">
             </LinkCard>
         </div>
+        <div v-else class="
+        w-screen flex justify-center pt-52 text-4xl text-[#fff0dd]">
+            There is no coffee link here, please add it
+        </div>
+
+        <button class="fixed bottom-10 right-10 bg-base-100 btn btn-circle btn-ghost btn-lg">
+            <font-awesome-icon icon="fa-solid fa-pencil" class="w-8 h-8 text-orange-400" />
+        </button>
     </main>
 </template>

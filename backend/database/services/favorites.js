@@ -9,7 +9,7 @@ const getFavorites = async (collector) => {
         SELECT "Links".*,"Favorites".*,"Members".points FROM "Links" INNER
         JOIN "Favorites" ON "Links"."linkID" = "Favorites"."linkID"
         JOIN "Members" ON "Links"."creator" = "Members"."memberName"
-        WHERE EXISTS (SELECT * FROM "Favorites" WHERE "collector" = $1)`;
+        WHERE "Favorites"."collector" = $1;`;
         const values = [collector];
         const result = await client.query(text, values);
 
@@ -56,10 +56,10 @@ const addFavorite = async (linkID, collector) => {
             throw new Error("This link is already in favorites");
         }
 
-        const text = `INSERT INTO "Favorites" VALUES ($1,$2, $3);`;
+        const text = `INSERT INTO "Favorites" VALUES ($1, $2, $3);`;
         const values = [uuidv4(), linkID, collector];
         await client.query(text, values);
-        
+
         const result = await getFavorites(collector);
         return result;
     } catch (error) {
