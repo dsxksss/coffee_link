@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import favoritesAPI from '../api/favorites';
 import { useToast } from "vue-toastification";
-import { onMounted, ref } from 'vue';
-import { Link } from '../interfaces/Link';
+import { inject, onMounted, ref, watch } from 'vue';
+import { Link } from '../interfaces/link';
 
 const props = defineProps({
   link: Link,
@@ -13,23 +13,20 @@ const props = defineProps({
 });
 
 const toast = useToast();
+const favorites = inject('favorites', ref([]));
 const isFavorite = ref(false);
 
-onMounted(async () => {
-  await fetchData();
+function updateIsFavorite() {
+  isFavorite.value = favorites.value.find((favorite: any) => favorite.linkID == props.link!.linkID) ? true : false;
+}
+
+watch(favorites, updateIsFavorite);
+
+onMounted(() => {
+  updateIsFavorite();
+  setTimeout(updateIsFavorite, 500)
 })
 
-async function fetchData() {
-  if (props.auth) {
-    const result = await favoritesAPI.getMemberFavorites();
-    const objData = JSON.parse(result.data);
-    const data = objData.data;
-    if (result.status == 200) {
-      const exist = data.find((favorite: any) => favorite.linkID == props.link?.linkID) ? true : false;
-      isFavorite.value = exist;
-    }
-  }
-}
 
 // import imageData from "../api/imageData";
 // function getRandomImage() {
@@ -40,24 +37,28 @@ async function fetchData() {
 async function addFavorite() {
   const result = await favoritesAPI.addFavorite(props.link!.linkID);
   const objData = JSON.parse(result.data);
+  const data = objData.data;
   const msg = objData.msg;
 
   if (result.status != 200) {
     return toast.error(msg);
   }
-
+  
+  favorites.value = data;
   isFavorite.value = true;
 }
 
 async function deleteFavorite() {
   const result = await favoritesAPI.deleteFavorite(props.link!.linkID);
   const objData = JSON.parse(result.data);
+  const data = objData.data;
   const msg = objData.msg;
 
   if (result.status != 200) {
     return toast.error(msg);
   }
 
+  favorites.value = data;
   isFavorite.value = false;
 }
 

@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import FavoritesPopver from "./FavoritesPopver.vue";
 import LoginDailog from "./LoginDailog.vue";
 import RegisterDailog from "./RegisterDailog.vue";
 import { onMounted, ref, watch } from "vue"
 
 const loginDialogOpen = ref(false);
 const registerDialogOpen = ref(false);
+const favoritesPopverOpen = ref(false);
+
+
 const isLogin = ref(false);
 
 const emit = defineEmits(['authUpdate'])
@@ -35,7 +39,12 @@ function logOut() {
 
         <div class="space-x-4 flex items-center">
 
-            <div v-if="isLogin" class="flex space-x-2 items-center">
+            <div v-if="isLogin" class="flex space-x-6 items-center">
+                <FavoritesPopver>
+                    <button @click="() => { favoritesPopverOpen = true }" class="flex btn btn-ghost btn-square items-center border-[2px] border-[#242427] rounded-lg">
+                        <font-awesome-icon icon="fa-solid fa-disease" class="text-orange-300  h-6 w-6" />
+                    </button>
+                </FavoritesPopver>
                 <button @click="logOut" class="flex items-center text-[#fff0dd] btn-error btn rounded-lg px-6 py-2">
                     <font-awesome-icon icon="fa-solid fa-right-from-bracket" class="h-6 w-6" />
                     <span class="text-[14px] font-bold">Sign Out</span>
@@ -60,9 +69,7 @@ function logOut() {
                 </RegisterDailog>
             </div>
 
-            <button class="flex btn btn-ghost btn-square items-center border-[2px] border-[#242427] rounded-lg">
-                <font-awesome-icon icon="fa-solid fa-disease" class="text-orange-300  h-6 w-6" />
-            </button>
+            
         </div>
     </div>
 </template>

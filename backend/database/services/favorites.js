@@ -21,7 +21,7 @@ const getFavorites = async (collector) => {
     }
 }
 
-const addFavorite = async (linkID, collector) => {
+const verifyCollector = async (linkID, collector) => {
     const client = await Database.getInstance().pool.connect();
     try {
         const exist = await isLinkExistLinksTable(linkID);
@@ -30,9 +30,36 @@ const addFavorite = async (linkID, collector) => {
             throw new Error("Link does not exist!");
         }
 
-        const text = `INSERT INTO "Favorites" VALUES ($1,$2,$3)`;
+        const text = `SELECT * FROM "Favorites" WHERE "linkID" = $1 AND "collector" = $2;`;
+
+        const values = [linkID, collector];
+        const result = await client.query(text, values);
+
+        if (result.rowCount > 0) {
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+}
+
+const addFavorite = async (linkID, collector) => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        const verify = await verifyCollector(linkID, collector);
+
+        if (!verify) {
+            throw new Error("This link is already in favorites");
+        }
+
+        const text = `INSERT INTO "Favorites" VALUES ($1,$2, $3);`;
         const values = [uuidv4(), linkID, collector];
         await client.query(text, values);
+        
         const result = await getFavorites(collector);
         return result;
     } catch (error) {

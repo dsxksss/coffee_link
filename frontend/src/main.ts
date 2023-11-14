@@ -15,14 +15,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
 import {
     faMugHot, faDoorOpen, faDisease, faRightToBracket,
-    faClose, faLink, faRightFromBracket, faHeart, faStar
+    faClose, faLink, faRightFromBracket, faHeart, faStar, faHeartCrack
 } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
 library.add(
     faMugHot, faDoorOpen, faDisease,
     faRightToBracket, faClose, faLink,
-    faRightFromBracket, faHeart, faStar
+    faRightFromBracket, faHeart, faStar, faHeartCrack
 );
 
 const options: PluginOptions = {

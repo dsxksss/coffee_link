@@ -4,17 +4,21 @@
 import Nav from '../components/Nav.vue';
 import LinkCard from '../components/LinkCard.vue';
 import linkApi from '../api/links';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, provide, reactive } from 'vue';
 import { useToast } from "vue-toastification";
-import { Link } from '../interfaces/Link';
+import { Link } from '../interfaces/link';
 import { bayesianRating } from '../utils/bayesian';
 import { checkAuthToken } from '../utils/checkAuth';
+import favoritesAPI from '../api/favorites';
 
 const toast = useToast();
 const links = ref([]);
 const auth = ref(false);
 
-async function fetchData() {
+const favorites = ref([]);
+provide('favorites', reactive(favorites));
+
+async function fetchCoffeeLinksData() {
     const result = await linkApi.getAllCoffeeLinks();
     const objData = JSON.parse(result.data);
     const data = objData.data;
@@ -26,6 +30,24 @@ async function fetchData() {
 
     links.value = data;
 }
+
+async function fetchMemberFavoritesData() {
+    const result = await favoritesAPI.getMemberFavorites();
+    const objData = JSON.parse(result.data);
+    const data = objData.data as Array<never>;
+    const msg = objData.msg;
+
+    if (result.status != 200) {
+        return toast.error(msg);
+    }
+    favorites.value = data;
+}
+
+
+(async () => {
+    await fetchMemberFavoritesData();
+})()
+
 
 function sortLinks(links: Array<any>): void {
     links.sort((a, b) => {
@@ -49,10 +71,11 @@ function authStatusUpdate() {
     auth.value = checkAuthToken();
 }
 
+
 onMounted(async () => {
-    await fetchData();
-    sortLinks(links.value);
     authStatusUpdate();
+    await fetchCoffeeLinksData();
+    sortLinks(links.value);
 })
 
 </script>
@@ -71,7 +94,8 @@ onMounted(async () => {
                 hidden: link['hidden'],
                 createdAt: link['createdAt']
             })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
-                :totalMembersOfRating="link['totalMembersOfRating']" :auth="auth"></LinkCard>
+                :totalMembersOfRating="link['totalMembersOfRating']" :auth="auth">
+            </LinkCard>
         </div>
     </main>
 </template>
