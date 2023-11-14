@@ -37,10 +37,13 @@ const linksAPI = {
     deleteLink: (linkID: string) => {
         const data = new FormData();
         data.append('linkID', linkID);
-        return axios.delete(BASE_URL, data, {
+        return axios.request({
+            method: 'delete',
+            url: 'http://localhost:3001/links',
             headers: {
                 'X-Auth-Token': localStorage.getItem('authToken')
-            }
+            },
+            data: data
         });
     }
 }

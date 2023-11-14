@@ -8,7 +8,7 @@ const registerMember = async (memberName, password) => {
     const client = await Database.getInstance().pool.connect();
     try {
         const exist = await isMembersExist(memberName);
-        if(exist) {
+        if (exist) {
             throw new Error(`Member ${memberName} already exists`);
         }
 
@@ -16,7 +16,7 @@ const registerMember = async (memberName, password) => {
         const hashedPassword = encryptionData(password);
         const values = [memberName, hashedPassword, 0];
         await client.query(text, values);
-        
+
         await validateMember(memberName, password);
         const [validate, data] = await validateMember(memberName, password);
 
@@ -25,7 +25,7 @@ const registerMember = async (memberName, password) => {
         }
 
         return data;
-        
+
     } catch (error) {
         throw new Error(error.message);
     } finally {
@@ -64,6 +64,20 @@ const validateMember = async (memberName, password) => {
     }
 }
 
+const getMemberInfo = async (memberName) => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        const text = `SELECT * FROM "Members" WHERE "memberName" = $1`;
+        const values = [memberName];
+        const result = await client.query(text, values);
+        return result.rows;
+    } catch (error) {
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+}
+
 const updateMember = async (memberName, password, newMbmberName, newPassword) => {
     const client = await Database.getInstance().pool.connect();
     try {
@@ -85,4 +99,4 @@ const updateMember = async (memberName, password, newMbmberName, newPassword) =>
     }
 }
 
-module.exports = { registerMember, validateMember, updateMember }
+module.exports = { registerMember, validateMember, updateMember, getMemberInfo }

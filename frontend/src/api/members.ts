@@ -10,6 +10,12 @@ const membersAPI = {
         return axios.post(BASE_URL, data);
     },
 
+    tokenLogin: () => axios.post(`${BASE_URL}/tokenLogin`, {
+        headers: {
+            'X-Auth-Token': localStorage.getItem('authToken')
+        }
+    }),
+
     register: (memberName: string, password: string) => {
         const data = new FormData();
         data.append('memberName', memberName);

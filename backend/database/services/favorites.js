@@ -1,4 +1,5 @@
 const Database = require('../db');
+const { v4: uuidv4 } = require('uuid');
 const { isLinkExistFavoritesTable, isLinkExistLinksTable } = require('./general')
 
 const getFavorites = async (collector) => {
@@ -29,8 +30,8 @@ const addFavorite = async (linkID, collector) => {
             throw new Error("Link does not exist!");
         }
 
-        const text = `INSERT INTO "Favorites" VALUES ($1,$2)`;
-        const values = [linkID, collector];
+        const text = `INSERT INTO "Favorites" VALUES ($1,$2,$3)`;
+        const values = [uuidv4(), linkID, collector];
         await client.query(text, values);
         const result = await getFavorites(collector);
         return result;

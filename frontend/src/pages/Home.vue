@@ -8,9 +8,11 @@ import { onMounted, ref } from 'vue';
 import { useToast } from "vue-toastification";
 import { Link } from '../interfaces/Link';
 import { bayesianRating } from '../utils/bayesian';
+import { checkAuthToken } from '../utils/checkAuth';
 
 const toast = useToast();
 const links = ref([]);
+const auth = ref(false);
 
 async function fetchData() {
     const result = await linkApi.getAllCoffeeLinks();
@@ -43,16 +45,21 @@ function calculateBayesianRating(link: any): number {
     });
 }
 
+function authStatusUpdate() {
+    auth.value = checkAuthToken();
+}
+
 onMounted(async () => {
     await fetchData();
     sortLinks(links.value);
+    authStatusUpdate();
 })
 
 </script>
 
 <template>
     <main class="flex flex-col justify-start items-start h-screen w-screen bg-[#121419] overflow-hidden">
-        <Nav></Nav>
+        <Nav @authUpdate="authStatusUpdate"></Nav>
         <div
             class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full grid-cols-1 justify-start 2xl:justify-items-center overflow-y-scroll scroll-smooth">
             <LinkCard v-for="link in links" :key="link['linkID']" :link="new Link({
@@ -64,7 +71,7 @@ onMounted(async () => {
                 hidden: link['hidden'],
                 createdAt: link['createdAt']
             })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
-                :totalMembersOfRating="link['totalMembersOfRating']"></LinkCard>
+                :totalMembersOfRating="link['totalMembersOfRating']" :auth="auth"></LinkCard>
         </div>
     </main>
 </template>

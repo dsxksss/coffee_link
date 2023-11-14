@@ -27,11 +27,12 @@ CREATE TABLE IF NOT EXISTS "Ratings" (
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("rater") REFERENCES "Members" ("memberName"),
     FOREIGN KEY ("linkID") REFERENCES "Links" ("linkID")
-)`;
+    )`;
 
 const Favorites = `
 CREATE TABLE IF NOT EXISTS "Favorites" (
-    "linkID" VARCHAR(255) PRIMARY KEY,
+    "favoriteID" VARCHAR(255) PRIMARY KEY,
+    "linkID" VARCHAR(255) NOT NULL,
     "collector" VARCHAR(255) NOT NULL,
     FOREIGN KEY ("collector") REFERENCES "Members" ("memberName"),
     FOREIGN KEY ("linkID") REFERENCES "Links" ("linkID")

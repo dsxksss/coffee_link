@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import LoginDailog from "./LoginDailog.vue";
 import RegisterDailog from "./RegisterDailog.vue";
-import { onMounted, ref } from "vue"
+import { onMounted, ref, watch } from "vue"
 
 const loginDialogOpen = ref(false);
 const registerDialogOpen = ref(false);
 const isLogin = ref(false);
+
+const emit = defineEmits(['authUpdate'])
+watch(isLogin,()=>{
+    emit('authUpdate');
+})
 
 onMounted(() => {
     const token = localStorage.getItem('authToken');

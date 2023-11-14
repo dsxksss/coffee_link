@@ -1,7 +1,8 @@
 const express = require('express');
 const Joi = require('joi');
 const router = express.Router();
-const { registerMember, validateMember, updateMember } = require('../services/members')
+const auth = require('../middlewares/auth');
+const { registerMember, validateMember, updateMember, getMemberInfo } = require('../services/members')
 
 const baseValidateSchema = Joi.object({
     memberName: Joi.string().min(3).max(30).required(),
@@ -33,6 +34,16 @@ router.post('/', async (req, res) => {
         res.status(400).send({ msg: `Login failed ${error}` });
     }
 });
+
+// Use authToken login
+router.post('/tokenLogin', auth, async (req, res) => {
+    try {
+        const data = await getMemberInfo(req.tokenData.memberName);
+        res.send({ data, msg: "Login successfully" });
+    } catch (error) {
+        res.status(400).send({ msg: `Login failed ${error}` });
+    }
+})
 
 // Update member information
 router.put('/', async (req, res) => {
