@@ -63,8 +63,8 @@ const incrementalCoffeePoints = async (memberName) => {
             throw new Error("Member does not exist");
         }
 
-        const text = `UPDATE "Members" SET "points" = "points" + $1`;
-        const values = [20];
+        const text = `UPDATE "Members" SET "points" = "points" + $1 WHERE "points" < $2`;
+        const values = [20,100000];
         await client.query(text, values);
     } catch (error) {
         throw new Error(error.message);
@@ -81,8 +81,8 @@ const decrementCoffeePoints = async (memberName) => {
             throw new Error("Member does not exist");
         }
 
-        const text = `UPDATE "Members" SET "points" = "points" - $1`;
-        const values = [20];
+        const text = `UPDATE "Members" SET "points" = "points" - $1 WHERE "points" > $2`;
+        const values = [5,0];
         await client.query(text, values);
     } catch (error) {
         throw new Error(error.message);
