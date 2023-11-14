@@ -9,14 +9,14 @@ interface LinkI {
 }
 
 class Link implements LinkI {
-    constructor(linkID: string, linkURL: string, linkTitle: string, linkDescription: string, creator: string, hidden: boolean, createdAt: string) {
-        this.linkID = linkID;
-        this.linkURL = linkURL;
-        this.linkTitle = linkTitle;
-        this.linkDescription = linkDescription;
-        this.creator = creator;
-        this.hidden = hidden;
-        this.createdAt = createdAt;
+    constructor(Link:LinkI) {
+        this.linkID = Link.linkID;
+        this.linkURL = Link.linkURL;
+        this.linkTitle = Link.linkTitle;
+        this.linkDescription = Link.linkDescription;
+        this.creator = Link.creator;
+        this.hidden = Link.hidden;
+        this.createdAt = Link.createdAt;
     }
     linkID: string;
     linkURL: string;

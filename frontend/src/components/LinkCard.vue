@@ -4,11 +4,9 @@ import { Link } from '../interfaces/Link'
 const props = defineProps({
   link: Link,
   points: Number,
-  averageRatingScore: Number,
-  totalMembersOfRating: Number,
+  averageRatingScore: String,
+  totalMembersOfRating: String,
 });
-
-const a = 21.2131;
 
 // import imageData from "../api/imageData";
 // function getRandomImage() {
@@ -40,12 +38,9 @@ const a = 21.2131;
       </span>
 
       <div class="relative w-40 overflow-hidden text-ellipsis p-2">
-        <span class="font-bold text-xl  ">{{ props.link.linkTitle }}</span>
+        <span class="font-bold text-xl  ">{{ link!.linkTitle }}</span>
       </div>
-
     </div>
-
-
 
   </div>
 </template>

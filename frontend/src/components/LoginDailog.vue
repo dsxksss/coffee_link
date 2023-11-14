@@ -51,7 +51,7 @@ async function handleLogin() {
             <DialogOverlay @click.self="emit('onClose')"
                 class="z-10 bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0">
                 <DialogContent
-                    class="relative flex flex-col items-center justify-start z-20 data-[state=open]:animate-contentShow top-[50%] left-[50%] max-h-[85vh] h-[50vh] w-[90vw] max-w-[650px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#1d2129] p-[25px] focus:outline-none">
+                    class="relative flex flex-col items-center justify-start z-20 data-[state=open]:animate-contentShow top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[650px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#1d2129] p-[25px] focus:outline-none">
                     <form class="flex flex-col items-center" @submit.prevent="handleLogin">
                         <div class="space-x-4 text-[#fff0dd] mt-6">
                             <font-awesome-icon icon="fa-solid fa-link" class="h-8 w-8" />

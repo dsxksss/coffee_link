@@ -1,16 +1,19 @@
 const Database = require('../db');
 const { v4: uuidv4 } = require('uuid');
 
-const getGlobalRatingStats = async () => {
+const getRatingStats = async () => {
     const client = await Database.getInstance().pool.connect();
     try {
         const text = `
-        SELECT ROUND(AVG("ratingScore"),1) AS "globalAverageRating", 
-        COUNT("rater") AS "totalRatingMembers" 
-        FROM "Ratings";`;
+        SELECT "Ratings"."linkID",
+        ROUND(AVG("ratingScore"),1) AS "averageRatingScore",
+        COUNT("ratingScore") AS "totalMembersOfRating",
+        ROUND(AVG("ratingScore"),1) AS "globalAverageRating", 
+        COUNT("rater") AS "totalRatingMembers" FROM "Ratings"
+        GROUP BY "Ratings"."linkID";`;
 
         const result = await client.query(text);
-        return result.rows[0];
+        return result.rows;
     } catch (error) {
         throw new Error(error.message);
     } finally {
@@ -21,27 +24,44 @@ const getGlobalRatingStats = async () => {
 const getAllLinks = async () => {
     const client = await Database.getInstance().pool.connect();
     try {
-        console.log();
-
         const text = `
-        SELECT "Links".*, "Members"."points", 
-        ROUND(AVG("Ratings"."ratingScore"),1) AS "averageRatingScore",
-        COUNT("Ratings"."ratingScore") AS "totalMembersOfRating"
-        FROM "Links"
+        SELECT "Links".*, "Members"."points" FROM "Links"
         INNER JOIN "Members" ON "Links"."creator" = "Members"."memberName"
-        INNER JOIN "Ratings" ON "Links"."linkID" = "Ratings"."linkID"
+        WHERE "hidden" = false
         GROUP BY "Links"."linkID", "Members"."points";`;
 
         const result = await client.query(text);
 
-        const ratingStats = await getGlobalRatingStats();
+        const ratingStats = await getRatingStats();
 
-        result.rows.forEach(element => {
-            element["globalAverageRating"] = ratingStats.globalAverageRating;
-            element["totalRatingMembers"] = ratingStats.totalRatingMembers;
-        });
+        const newResult = [];
+        for (row of result.rows) {
+            const ratingStat = ratingStats.find(stat => stat.linkID === row.linkID);
+            if (ratingStat) {
+                newResult.push(
+                    {
+                        ...row,
+                        averageRatingScore: ratingStat.averageRatingScore,
+                        totalMembersOfRating: ratingStat.totalMembersOfRating,
+                        globalAverageRating: ratingStat.globalAverageRating,
+                        totalRatingMembers: ratingStat.totalRatingMembers,
+                    }
+                )
+                continue;
+            } else {
+                newResult.push(
+                    {
+                        ...row,
+                        averageRatingScore: 0,
+                        totalMembersOfRating: 0,
+                        globalAverageRating: 0,
+                        totalRatingMembers: 0,
+                    }
+                )
+            }
+        }
 
-        return result.rows;
+        return newResult;
     } catch (error) {
         throw new Error(error.message);
     } finally {

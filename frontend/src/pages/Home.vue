@@ -6,11 +6,12 @@ import LinkCard from '../components/LinkCard.vue';
 import linkApi from '../api/links';
 import { onMounted, ref } from 'vue';
 import { useToast } from "vue-toastification";
+import { Link } from '../interfaces/Link';
+import { bayesianRating } from '../utils/bayesian';
 
 const toast = useToast();
 const links = ref([]);
 
-// 贝叶斯平均评级 = （（平均评级分数 * 对链接进行评级的成员总数） + （全局平均评级分数 * 全局评级成员总数））/ （对链接进行评级的成员总数 + 全局评级成员总数）
 async function fetchData() {
     const result = await linkApi.getAllCoffeeLinks();
     const objData = JSON.parse(result.data);
@@ -24,8 +25,27 @@ async function fetchData() {
     links.value = data;
 }
 
-onMounted(() => {
-    fetchData();
+function sortLinks(links: Array<any>): void {
+    links.sort((a, b) => {
+        const aBayesian = calculateBayesianRating(a);
+        const bBayesian = calculateBayesianRating(b);
+        return bBayesian - aBayesian;
+    });
+}
+
+function calculateBayesianRating(link: any): number {
+    const { averageRatingScore, totalMembersOfRating, globalAverageRating, totalRatingMembers } = link;
+    return bayesianRating({
+        averageRatingScore,
+        totalMembersOfRating,
+        globalAverageRating,
+        totalRatingMembers,
+    });
+}
+
+onMounted(async () => {
+    await fetchData();
+    sortLinks(links.value);
 })
 
 </script>
@@ -35,21 +55,16 @@ onMounted(() => {
         <Nav></Nav>
         <div
             class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full grid-cols-1 justify-start 2xl:justify-items-center overflow-y-scroll scroll-smooth">
-            <LinkCard 
-            v-for="link in links" 
-            :link="{
+            <LinkCard v-for="link in links" :key="link['linkID']" :link="new Link({
                 linkID: link['linkID'],
                 linkURL: link['linkURL'],
                 linkTitle: link['linkTitle'],
                 linkDescription: link['linkDescription'],
                 creator: link['creator'],
                 hidden: link['hidden'],
-                createdAt: link['createdAt'],
-            }"
-            :points="link['points']"
-            :averageRatingScore="link['averageRatingScore']"
-            :totalMembersOfRating="link['totalMembersOfRating']"
-            ></LinkCard>
+                createdAt: link['createdAt']
+            })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
+                :totalMembersOfRating="link['totalMembersOfRating']"></LinkCard>
         </div>
     </main>
 </template>
