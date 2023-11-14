@@ -13,7 +13,7 @@ const props = defineProps({
 
 const toast = useToast();
 const favorites = inject('favorites', ref([]));
-const auth = inject('auth', ref(false));
+const [auth, _] = inject('auth', ref<any>([]));
 const isFavorite = ref(false);
 
 function updateIsFavorite() {
@@ -43,7 +43,7 @@ async function addFavorite() {
   if (result.status != 200) {
     return toast.error(msg);
   }
-  
+
   favorites.value = data;
   isFavorite.value = true;
 }

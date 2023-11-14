@@ -17,7 +17,7 @@ const links = ref([]);
 const auth = ref(false);
 const favorites = ref([]);
 provide('favorites', favorites);
-provide('auth', {auth, authStatusUpdate });
+provide('auth', [auth, authStatusUpdate]);
 
 async function fetchCoffeeLinksData() {
     const result = await linkApi.getAllCoffeeLinks();
@@ -55,6 +55,7 @@ function sortLinks(links: Array<any>): void {
         const aBayesian = calculateBayesianRating(a);
         const bBayesian = calculateBayesianRating(b);
         return bBayesian - aBayesian;
+
     });
 }
 
@@ -104,7 +105,7 @@ onMounted(async () => {
         </div>
 
         <button class="fixed bottom-10 right-10 bg-base-100 btn btn-circle btn-ghost btn-lg">
-            <font-awesome-icon icon="fa-solid fa-pencil" class="w-8 h-8 text-orange-400" />
+            <font-awesome-icon icon="fa-solid fa-pencil" class="w-8 h-8 text-white" />
         </button>
     </main>
 </template>
