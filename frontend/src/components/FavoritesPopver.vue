@@ -34,9 +34,9 @@ async function deleteFavorite(linkID: string) {
     </PopoverTrigger>
     <PopoverPortal>
       <PopoverContent side="bottom" :side-offset="10" :align-offset="-20" align="end"
-        class="rounded-lg p-5 overflow-hidden overflow-y-scroll h-max-[20vh] h-auto w-max-[400px] bg-base-100 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade">
-        <div class="overflow-y-scroll h-max-[20vh]">
-          <p class="text-mauve12 text-[20px] leading-[19px] font-semibold">
+        class="rounded-lg p-5 overflow-auto scroll-smooth max-h-[50vh] h-auto w-max-[400px] bg-base-100 will-change-[transform,opacity] data-[state=open]:data-[side=top]:animate-slideDownAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade">
+        <div class="overflow-auto scroll-smooth">
+          <p class="text-[20px] leading-[19px] font-semibold">
             Favorites
           </p>
 

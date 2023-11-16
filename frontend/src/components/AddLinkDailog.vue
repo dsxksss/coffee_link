@@ -65,6 +65,7 @@ async function handleAddLink() {
         return toast.error(msg);
     }
 
+    toast.dismiss("checkCacheData")
     clearData();
     emit('onClose');
     emit('onSubmitSuccess')

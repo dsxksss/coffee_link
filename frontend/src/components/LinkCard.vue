@@ -12,6 +12,8 @@ const props = defineProps({
   totalMembersOfRating: String,
 });
 
+const emit = defineEmits(['openDailogEmit']);
+
 const toast = useToast();
 const favorites = inject('favorites', ref([]));
 const [auth, _] = inject('auth', ref<any>([]));
@@ -87,30 +89,35 @@ async function handleFavorites() {
       </button>
     </div>
 
-    <div class="relative w-full h-[50%]">
+    <div @click="emit('openDailogEmit', link!.linkID)" class="cursor-pointer relative w-full h-[50%]">
       <span class="absolute top-3 right-3 space-x-1">
-        <span class="text-[20px]">{{ parseFloat(averageRatingScore!) <= 0.0 ? '' : averageRatingScore }}</span>
         <font-awesome-icon icon="fa-solid fa-star"
-        :class="`w-5 h-5 ${parseFloat(averageRatingScore!) <= 0.0 ? ' text-gray-400' : 'text-orange-400'}`" />
-      </span>
-      
-      <div class="w-40 overflow-hidden text-ellipsis px-4 pt-3">
-        <span class="font-bold text-xl text-[#fff0dd]">{{ link!.linkTitle }}</span>
-      </div>
-      
-      <div class="text-ellipsis overflow-hidden px-4 pt-2">
-        <p class="text truncate break-all text-gray-500">{{ link!.linkDescription }}</p>
-      </div>
-      
-      <div class="text-ellipsis px-4 pt-2">
-        <span class=" truncate badge badge-success text-white">{{ `${link!.creator.substring(0,10)}${link!.creator.length>10?'...':''}` }}</span>
-      </div>
-      
-      
-      <div class="absolute bottom-3 right-3">
-        <span class="truncate text-sm text-gray-500">{{ extractDateTime(link!.createdAt) }}</span>
-      </div>
+          :class="`w-5 h-5 ${parseFloat(averageRatingScore!) <= 0.0 ? ' text-gray-400' : 'text-orange-400'}`" />
+        <span class="text-[20px]">{{ parseFloat(averageRatingScore!) <= 0.0 ? null : averageRatingScore }}</span>
+        </span>
+
+        <div class="w-40 overflow-hidden text-ellipsis px-4 pt-3">
+          <span class="font-bold text-xl text-[#fff0dd]">{{ link!.linkTitle }}</span>
+        </div>
+
+        <div class="text-ellipsis overflow-hidden px-4 pt-2">
+          <p class="text truncate break-all text-gray-500">{{ link!.linkDescription }}</p>
+        </div>
+
+        <div class="text-ellipsis px-4 pt-2">
+          <span class=" truncate badge badge-success text-white">{{
+            `${link!.creator.substring(0, 10)}${link!.creator.length > 10 ? '...' : ''}` }}</span>
+        </div>
+
+        <div class="absolute bottom-3 left-5">
+          <font-awesome-icon icon="fa-solid fa-fire" />
+          {{ points }}
+        </div>
+
+        <div class="absolute bottom-3 right-3">
+          <span class="truncate text-sm text-gray-500">{{ extractDateTime(link!.createdAt) }}</span>
+        </div>
     </div>
-    
+
   </div>
 </template>

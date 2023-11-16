@@ -10,19 +10,28 @@ import { Link } from '../interfaces/link';
 import { bayesianRating } from '../utils/bayesian';
 import { checkAuthToken } from '../utils/checkAuth';
 import favoritesAPI from '../api/favorites';
-import AddLinkDailogVue from '../components/AddLinkDailog.vue';
+import AddLinkDailog from '../components/AddLinkDailog.vue';
+import linkDailog from '../components/linkDailog.vue';
 
 
 const toast = useToast();
 const links = ref([]);
 const addLinkDailogOpen = ref(false);
+const linkDailogOpen = ref(false);
 
 const auth = ref(false);
 const favorites = ref([]);
-provide('favorites', favorites);
+const currentLink = ref({});
 provide('auth', [auth, authStatusUpdate]);
+provide('favorites', favorites);
+provide('currentLink', currentLink);
 
 watch(auth, fetchMemberFavoritesData);
+
+function chooseLink(linkID: string) {
+    currentLink.value = links.value.find((link: any) => link.linkID == linkID) ?? {};
+    linkDailogOpen.value = true;
+}
 
 async function fetchCoffeeLinksData() {
     const result = await linkApi.getAllCoffeeLinks();
@@ -77,7 +86,7 @@ function authStatusUpdate() {
     auth.value = checkAuthToken();
 }
 
-async function coffeelinksDataUp(){
+async function coffeelinksDataUp() {
     await fetchCoffeeLinksData();
     sortLinks(links.value);
 }
@@ -94,36 +103,40 @@ onMounted(async () => {
     <main class="flex flex-col justify-start items-start h-screen w-screen bg-[#121419] overflow-hidden">
         <Nav @authUpdate="authStatusUpdate"></Nav>
         <div v-if="links.length > 0" class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full 
-            grid-cols-1 justify-start 2xl:justify-items-center overflow-y-scroll scroll-smooth">
-            <LinkCard class="hover:scale-105 transition-transform duration-300 ease-in-out" v-for="link in links"
-                :key="link['linkID']" :link="new Link({
-                    linkID: link['linkID'],
-                    linkURL: link['linkURL'],
-                    linkTitle: link['linkTitle'],
-                    linkDescription: link['linkDescription'],
-                    creator: link['creator'],
-                    hidden: link['hidden'],
-                    createdAt: link['createdAt']
-                })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
-                :totalMembersOfRating="link['totalMembersOfRating']">
-            </LinkCard>
+            grid-cols-1 justify-start 2xl:justify-items-center overflow-auto scroll-smooth">
+            <linkDailog :open="linkDailogOpen" @onClose="linkDailogOpen = false">
+                <LinkCard @open-dailog-emit="(linkID: string) => chooseLink(linkID)"
+                    class="hover:scale-105 transition-transform duration-300 ease-in-out" v-for="link in links"
+                    :key="link['linkID']" :link="new Link({
+                        linkID: link['linkID'],
+                        linkURL: link['linkURL'],
+                        linkTitle: link['linkTitle'],
+                        linkDescription: link['linkDescription'],
+                        creator: link['creator'],
+                        hidden: link['hidden'],
+                        createdAt: link['createdAt']
+                    })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
+                    :totalMembersOfRating="link['totalMembersOfRating']">
+                </LinkCard>
+            </linkDailog>
         </div>
         <div v-else class="
         w-screen flex justify-center pt-52 text-4xl text-[#fff0dd]">
             There is no coffee link here, please add it
         </div>
 
-        <AddLinkDailogVue :open="addLinkDailogOpen" @onClose="addLinkDailogOpen = false" @on-submit-success="coffeelinksDataUp">
-            <button @click="() => { 
-                if(auth){
+        <AddLinkDailog :open="addLinkDailogOpen" @onClose="addLinkDailogOpen = false"
+            @on-submit-success="coffeelinksDataUp">
+            <button @click="() => {
+                if (auth) {
                     addLinkDailogOpen = true;
-                }else{
+                } else {
                     toast.error('Please Login First!');
                 }
-             }" class="fixed bottom-10 right-10 bg-base-100 btn btn-circle btn-ghost btn-lg">
+            }" class="fixed bottom-10 right-10 bg-base-100 btn btn-circle btn-ghost btn-lg">
                 <font-awesome-icon icon="fa-solid fa-pencil" class="w-8 h-8 text-white" />
             </button>
-        </AddLinkDailogVue>
+        </AddLinkDailog>
 
     </main>
 </template>
