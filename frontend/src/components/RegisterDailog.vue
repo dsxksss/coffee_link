@@ -54,7 +54,7 @@ async function handleRegister() {
     <DialogRoot :open="props.open">
         <slot />
         <DialogPortal>
-            <DialogOverlay @click.self="emit('onClose')"
+            <DialogOverlay @click.self="() => { emit('onClose'); clearData(); }"
                 class="z-10 bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0">
                 <DialogContent
                     class="relative flex flex-col items-center justify-start z-20 data-[state=open]:animate-contentShow top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-[#1d2129] p-[25px] focus:outline-none">
@@ -97,7 +97,7 @@ async function handleRegister() {
                             <font-awesome-icon icon="fa-solid fa-right-to-bracket" class="h-6 w-6" />
                             <span class="text-[14px] font-bold">Sign Up</span>
                         </button>
-                        <button @click="emit('onClose')" class="btn btn-sm btn-square btn-ghost absolute top-1 right-1">
+                        <button @click="() => { emit('onClose'); clearData(); }" class="btn btn-sm btn-square btn-ghost absolute top-1 right-1">
                             <font-awesome-icon icon="fa-solid fa-close" class="h-6 w-6" />
                         </button>
                     </form>

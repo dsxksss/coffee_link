@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
     faMugHot, faDoorOpen, faDisease, faRightToBracket,
     faClose, faLink, faRightFromBracket, faHeart, faStar,
-    faHeartCrack, faLinkSlash,faPencil,faPenToSquare,faFire
+    faHeartCrack, faLinkSlash,faPencil,faPenToSquare,faFire,faEye,faEyeSlash
 } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
@@ -25,7 +25,7 @@ library.add(
     faRightToBracket, faClose, faLink,
     faRightFromBracket, faHeart, faStar,
     faHeartCrack, faLinkSlash, faPencil, 
-    faPenToSquare, faFire
+    faPenToSquare, faFire, faEye, faEyeSlash
 );
 
 const options: PluginOptions = {

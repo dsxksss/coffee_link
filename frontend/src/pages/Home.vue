@@ -4,20 +4,25 @@
 import Nav from '../components/Nav.vue';
 import LinkCard from '../components/LinkCard.vue';
 import linkApi from '../api/links';
-import { onMounted, ref, provide } from 'vue';
+import { onMounted, ref, provide, watch } from 'vue';
 import { useToast } from "vue-toastification";
 import { Link } from '../interfaces/link';
 import { bayesianRating } from '../utils/bayesian';
 import { checkAuthToken } from '../utils/checkAuth';
 import favoritesAPI from '../api/favorites';
+import AddLinkDailogVue from '../components/AddLinkDailog.vue';
+
 
 const toast = useToast();
 const links = ref([]);
+const addLinkDailogOpen = ref(false);
 
 const auth = ref(false);
 const favorites = ref([]);
 provide('favorites', favorites);
 provide('auth', [auth, authStatusUpdate]);
+
+watch(auth, fetchMemberFavoritesData);
 
 async function fetchCoffeeLinksData() {
     const result = await linkApi.getAllCoffeeLinks();
@@ -55,7 +60,6 @@ function sortLinks(links: Array<any>): void {
         const aBayesian = calculateBayesianRating(a);
         const bBayesian = calculateBayesianRating(b);
         return bBayesian - aBayesian;
-
     });
 }
 
@@ -73,6 +77,10 @@ function authStatusUpdate() {
     auth.value = checkAuthToken();
 }
 
+async function coffeelinksDataUp(){
+    await fetchCoffeeLinksData();
+    sortLinks(links.value);
+}
 
 onMounted(async () => {
     authStatusUpdate();
@@ -85,17 +93,18 @@ onMounted(async () => {
 <template>
     <main class="flex flex-col justify-start items-start h-screen w-screen bg-[#121419] overflow-hidden">
         <Nav @authUpdate="authStatusUpdate"></Nav>
-        <div v-if="links.length > 0"
-            class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full grid-cols-1 justify-start 2xl:justify-items-center overflow-y-scroll scroll-smooth">
-            <LinkCard v-for="link in links" :key="link['linkID']" :link="new Link({
-                linkID: link['linkID'],
-                linkURL: link['linkURL'],
-                linkTitle: link['linkTitle'],
-                linkDescription: link['linkDescription'],
-                creator: link['creator'],
-                hidden: link['hidden'],
-                createdAt: link['createdAt']
-            })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
+        <div v-if="links.length > 0" class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full 
+            grid-cols-1 justify-start 2xl:justify-items-center overflow-y-scroll scroll-smooth">
+            <LinkCard class="hover:scale-105 transition-transform duration-300 ease-in-out" v-for="link in links"
+                :key="link['linkID']" :link="new Link({
+                    linkID: link['linkID'],
+                    linkURL: link['linkURL'],
+                    linkTitle: link['linkTitle'],
+                    linkDescription: link['linkDescription'],
+                    creator: link['creator'],
+                    hidden: link['hidden'],
+                    createdAt: link['createdAt']
+                })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
                 :totalMembersOfRating="link['totalMembersOfRating']">
             </LinkCard>
         </div>
@@ -104,8 +113,17 @@ onMounted(async () => {
             There is no coffee link here, please add it
         </div>
 
-        <button class="fixed bottom-10 right-10 bg-base-100 btn btn-circle btn-ghost btn-lg">
-            <font-awesome-icon icon="fa-solid fa-pencil" class="w-8 h-8 text-white" />
-        </button>
+        <AddLinkDailogVue :open="addLinkDailogOpen" @onClose="addLinkDailogOpen = false" @on-submit-success="coffeelinksDataUp">
+            <button @click="() => { 
+                if(auth){
+                    addLinkDailogOpen = true;
+                }else{
+                    toast.error('Please Login First!');
+                }
+             }" class="fixed bottom-10 right-10 bg-base-100 btn btn-circle btn-ghost btn-lg">
+                <font-awesome-icon icon="fa-solid fa-pencil" class="w-8 h-8 text-white" />
+            </button>
+        </AddLinkDailogVue>
+
     </main>
 </template>

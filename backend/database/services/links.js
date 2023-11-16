@@ -28,7 +28,8 @@ const getAllLinks = async () => {
         SELECT "Links".*, "Members"."points" FROM "Links"
         INNER JOIN "Members" ON "Links"."creator" = "Members"."memberName"
         WHERE "hidden" = false
-        GROUP BY "Links"."linkID", "Members"."points";`;
+        GROUP BY "Links"."linkID", "Members"."points"
+        ORDER BY "Links"."createdAt" DESC;`;
 
         const result = await client.query(text);
 
