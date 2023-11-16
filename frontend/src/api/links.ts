@@ -6,6 +6,14 @@ const linksAPI = {
     getAllCoffeeLinks: () => {
         return axios.get(BASE_URL);
     },
+    
+    getMemberHiddenCoffeeLinks: () => {
+        return axios.get(`${BASE_URL}/memberHiddenLinks`, {
+            headers: {
+                'X-Auth-Token': localStorage.getItem('authToken')
+            }
+        });
+    },
 
     createLink: (linkURL: string, linkTitle: string, linkDescription: string, hidden: boolean) => {
         const data = new FormData();

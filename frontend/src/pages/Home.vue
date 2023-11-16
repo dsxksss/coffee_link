@@ -26,7 +26,10 @@ provide('auth', [auth, authStatusUpdate]);
 provide('favorites', favorites);
 provide('currentLink', currentLink);
 
-watch(auth, fetchMemberFavoritesData);
+watch(auth, async () => {
+    await fetchMemberFavoritesData();
+    await fetchCoffeeLinksData();
+});
 
 function chooseLink(linkID: string) {
     currentLink.value = links.value.find((link: any) => link.linkID == linkID) ?? {};
@@ -44,18 +47,32 @@ async function fetchCoffeeLinksData() {
     }
 
     links.value = data;
+
+    if (auth.value) {
+        const authResult = await linkApi.getMemberHiddenCoffeeLinks();
+        const authObjData = JSON.parse(authResult.data);
+        const authData = authObjData.data;
+        const msg = authObjData.msg;
+
+        if (result.status != 200) {
+            return toast.error(msg);
+        }
+        links.value = links.value.concat(authData)
+    }
 }
 
 async function fetchMemberFavoritesData() {
-    const result = await favoritesAPI.getMemberFavorites();
-    const objData = JSON.parse(result.data);
-    const data = objData.data as Array<never>;
-    const msg = objData.msg;
+    if (auth.value) {
+        const result = await favoritesAPI.getMemberFavorites();
+        const objData = JSON.parse(result.data);
+        const data = objData.data as Array<never>;
+        const msg = objData.msg;
 
-    if (result.status != 200) {
-        return toast.error(msg);
+        if (result.status != 200) {
+            return toast.error(msg);
+        }
+        favorites.value = data;
     }
-    favorites.value = data;
 }
 
 

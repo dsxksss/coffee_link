@@ -125,6 +125,55 @@ const updateLink = async (linkID, creatorName, newLinkURL, newLinkTitle, newLink
     }
 }
 
+const getMemberHiddenLinks = async (creatorName) => {
+    const client = await Database.getInstance().pool.connect();
+    try {
+        const text = `
+        SELECT "Links".*, "Members"."points" FROM "Links"
+        INNER JOIN "Members" ON "Links"."creator" = "Members"."memberName"
+        WHERE "Links"."creator" = $1 AND "hidden" = true
+        GROUP BY "Links"."linkID", "Members"."points"
+        ORDER BY "Links"."createdAt" DESC;`;
+
+        const result = await client.query(text, [creatorName]);
+
+        const ratingStats = await getRatingStats();
+
+        const newResult = [];
+        for (row of result.rows) {
+            const ratingStat = ratingStats.find(stat => stat.linkID === row.linkID);
+            if (ratingStat) {
+                newResult.push(
+                    {
+                        ...row,
+                        averageRatingScore: ratingStat.averageRatingScore,
+                        totalMembersOfRating: ratingStat.totalMembersOfRating,
+                        globalAverageRating: ratingStat.globalAverageRating,
+                        totalRatingMembers: ratingStat.totalRatingMembers,
+                    }
+                )
+                continue;
+            } else {
+                newResult.push(
+                    {
+                        ...row,
+                        averageRatingScore: 0,
+                        totalMembersOfRating: 0,
+                        globalAverageRating: 0,
+                        totalRatingMembers: 0,
+                    }
+                )
+            }
+        }
+
+        return newResult;
+    } catch (error) {
+        throw new Error(error.message);
+    } finally {
+        client.release();
+    }
+}
+
 const deleteLink = async (linkID, creatorName) => {
     const client = await Database.getInstance().pool.connect();
     try {
@@ -153,4 +202,4 @@ const deleteLink = async (linkID, creatorName) => {
     }
 }
 
-module.exports = { getAllLinks, createLink, verifyCreator, updateLink, deleteLink };
+module.exports = { getAllLinks, createLink, verifyCreator, updateLink, deleteLink, getMemberLinksAndAllLinks: getMemberHiddenLinks };

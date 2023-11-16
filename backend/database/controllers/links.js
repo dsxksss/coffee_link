@@ -1,13 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
-const { getAllLinks, createLink, updateLink, deleteLink } = require('../services/links');
+const { getAllLinks, createLink, updateLink, deleteLink,getMemberLinksAndAllLinks } = require('../services/links');
 const auth = require('../middlewares/auth');
 
 // Get all links
 router.get('/', async (_, res) => {
     try {
         const data = await getAllLinks();
+        res.send({ data, msg: "Get all links successfully" });
+    } catch (error) {
+        res.status(400).send({ msg: `Get all links failed! ${error}` })
+    }
+})
+
+// Get all links
+router.get('/memberHiddenLinks', auth, async (req, res) => {
+    try {
+        const data = await getMemberLinksAndAllLinks(req.tokenData.memberName);
         res.send({ data, msg: "Get all links successfully" });
     } catch (error) {
         res.status(400).send({ msg: `Get all links failed! ${error}` })

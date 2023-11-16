@@ -8,7 +8,6 @@ const loginDialogOpen = ref(false);
 const registerDialogOpen = ref(false);
 const favoritesPopverOpen = ref(false);
 
-
 const isLogin = ref(false);
 
 const emit = defineEmits(['authUpdate'])
@@ -26,6 +25,7 @@ onMounted(() => {
 function logOut() {
     isLogin.value = false;
     localStorage.removeItem('authToken');
+    emit('authUpdate');
 }
 
 </script>
