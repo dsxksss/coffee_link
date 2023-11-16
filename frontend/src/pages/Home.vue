@@ -86,7 +86,7 @@ function authStatusUpdate() {
     auth.value = checkAuthToken();
 }
 
-async function coffeelinksDataUp() {
+async function coffeelinksUpdata() {
     await fetchCoffeeLinksData();
     sortLinks(links.value);
 }
@@ -104,7 +104,7 @@ onMounted(async () => {
         <Nav @authUpdate="authStatusUpdate"></Nav>
         <div v-if="links.length > 0" class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full 
             grid-cols-1 justify-start 2xl:justify-items-center overflow-auto scroll-smooth">
-            <linkDailog :open="linkDailogOpen" @onClose="linkDailogOpen = false">
+            <linkDailog :open="linkDailogOpen" @onClose="linkDailogOpen = false" @on-submit-success="coffeelinksUpdata">
                 <LinkCard @open-dailog-emit="(linkID: string) => chooseLink(linkID)"
                     class="hover:scale-105 transition-transform duration-300 ease-in-out" v-for="link in links"
                     :key="link['linkID']" :link="new Link({
@@ -126,7 +126,7 @@ onMounted(async () => {
         </div>
 
         <AddLinkDailog :open="addLinkDailogOpen" @onClose="addLinkDailogOpen = false"
-            @on-submit-success="coffeelinksDataUp">
+            @on-submit-success="coffeelinksUpdata">
             <button @click="() => {
                 if (auth) {
                     addLinkDailogOpen = true;

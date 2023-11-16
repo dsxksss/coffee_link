@@ -130,14 +130,21 @@ const deleteLink = async (linkID, creatorName) => {
     try {
         const verify = await verifyCreator(linkID, creatorName);
 
-        console.log(verify);
         if (!verify) {
             throw new Error("Insufficient permissions");
         }
 
-        const text = `DELETE FROM "Links" WHERE "linkID" = $1`;
-        const values = [linkID];
-        await client.query(text, values);
+        const deleteFavoritesQuery = `DELETE FROM "Favorites" WHERE "linkID" = $1`;
+        const deleteFavoritesValues = [linkID];
+        await client.query(deleteFavoritesQuery, deleteFavoritesValues);
+
+        const deleteRatingsQuery = `DELETE FROM "Ratings" WHERE "linkID" = $1`;
+        const deleteRatingsValues = [linkID];
+        await client.query(deleteRatingsQuery, deleteRatingsValues);
+
+        const deleteLinksQuery = `DELETE FROM "Links" WHERE "linkID" = $1`;
+        const deleteLinksValues = [linkID];
+        await client.query(deleteLinksQuery, deleteLinksValues);
 
     } catch (error) {
         throw new Error(error.message);
