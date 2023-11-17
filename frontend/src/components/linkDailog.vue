@@ -7,13 +7,15 @@ import {
 } from 'radix-vue';
 
 import { extractDateTime } from '../utils/extractDateTime';
-import { inject, ref } from 'vue';
+import { inject, ref, watch } from 'vue';
 import { useToast } from "vue-toastification";
 import UpdateLinkDailog from './UpdateLinkDailog.vue';
 import { Link } from '../interfaces/link';
 import { jwtDecode } from "jwt-decode";
 import ToastYseOrNo from './ToastYseOrNo.vue';
 import linksAPI from '../api/links';
+import RatingPopver from './RatingPopver.vue';
+
 
 const props = defineProps({
     open: Boolean
@@ -22,9 +24,27 @@ const emit = defineEmits(['onClose', 'onSubmitSuccess'])
 
 const updateLinkDailogOpen = ref(false)
 
-
 const [auth, _] = inject('auth', ref<any>([]));
-const link = inject<any>('currentLink', {});
+const homeDataRefresh = inject('homeDataRefresh', () => { });
+const link = inject<any>('currentLink');
+
+const linkURL = ref('');
+const linkTitle = ref('');
+const linkDescription = ref('');
+const points = ref('');
+const averageRatingScore = ref('')
+const hidden = ref(false);
+
+watch(link, () => { linkUpdate() })
+
+function linkUpdate() {
+    linkURL.value = link.value.linkURL;
+    linkTitle.value = link.value.linkTitle;
+    linkDescription.value = link.value.linkDescription;
+    points.value = link.value.points;
+    averageRatingScore.value = link.value.averageRatingScore;
+    hidden.value = link.value.hidden;
+}
 
 function checkSelf(): boolean {
     if (localStorage.getItem('authToken') == undefined) {
@@ -44,7 +64,7 @@ function confirm(linkID: string) {
         listeners: {
             clickYse: () => {
                 handleLinkDelete(linkID);
-                emit('onClose'); 
+                emit('onClose');
                 toast.dismiss("deleteLink")
             },
             clickNo: () => { toast.dismiss("deleteLink") }
@@ -61,7 +81,6 @@ function confirm(linkID: string) {
 }
 
 async function handleLinkDelete(linkID: string) {
-    console.log(linkID);
     const result = await linksAPI.deleteLink(linkID);
     const objData = JSON.parse(result.data);
     const msg = objData.msg;
@@ -75,7 +94,6 @@ async function handleLinkDelete(linkID: string) {
     toast.success(msg);
 }
 
-
 </script>
 
 <template>
@@ -83,9 +101,9 @@ async function handleLinkDelete(linkID: string) {
         <slot />
         <DialogPortal>
             <DialogOverlay @click.self="emit('onClose')"
-                class="z-10 bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0">
+                class="bg-black/50 data-[state=open]:animate-overlayShow fixed inset-0">
                 <DialogContent
-                    class="relative bg-base-100 shadow-2xl z-20 max-h-[500px] max-w-[800px]  data-[state=open]:animate-contentShow  top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-xl focus:outline-none">
+                    class="relative bg-base-100 shadow-2xl max-h-[500px] max-w-[800px] data-[state=open]:animate-contentShow  top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-xl focus:outline-none">
 
                     <div class="w-full flex flex-col md:flex-row rounded-lg">
                         <img class="max-w-[400px] max-h-[500px] rounded-lg"
@@ -94,38 +112,42 @@ async function handleLinkDelete(linkID: string) {
 
                         <div class="p-5 max-w-[400px] min-w-[400px] max-h-[500px] space-y-4">
                             <div class="flex justify-between items-center max-w-full">
-                                <p class="truncate max-w-[180px] text-2xl text-[#fff0dd]">{{ link.linkTitle }}</p>
+                                <p class="truncate max-w-[180px] text-2xl text-[#fff0dd]">{{ linkTitle }}</p>
                                 <span class="space-x-3 max-w-[220px] flex justify-between items-end">
                                     <div class="space-x-1 flex items-end">
                                         <span>
                                             <font-awesome-icon icon="fa-solid fa-fire"
                                                 class="w-[25px] h-[25px] text-red-400" />
                                         </span>
-                                        <span class="text-2xl">{{ link.points }}</span>
+                                        <span class="text-2xl">{{ points }}</span>
                                     </div>
-                                    <div class="space-x-1 flex items-center">
-                                        <font-awesome-icon icon="fa-solid fa-star"
-                                            :class="`w-[24px] h-[24px] ${parseFloat(link.averageRatingScore) <= 0.0 ? ' text-gray-400' : 'text-orange-400'}`" />
-                                        <span class="text-2xl">{{ parseFloat(link.averageRatingScore) <= 0.0 ? '0.0' :
-                                            link.averageRatingScore }}</span>
-                                    </div>
+                                    <RatingPopver :linkID="link.linkID" @on-submit-success="() => homeDataRefresh()">
+                                        <button>
+                                            <div class="space-x-1 flex items-center">
+                                                <font-awesome-icon icon="fa-solid fa-star"
+                                                    :class="`w-[24px] h-[24px] ${parseFloat(averageRatingScore) <= 0.0 ? ' text-gray-400' : 'text-orange-400'}`" />
+                                                <span class="text-2xl">{{ parseFloat(averageRatingScore) <= 0.0 ? '0.0' :
+                                                    averageRatingScore }}</span>
+                                            </div>
+                                        </button>
+                                    </RatingPopver>
                                 </span>
                             </div>
                             <div><a :href="link.linkURL" target="_blank" class="truncate text-xl link">Coffee Link</a></div>
-                            <p class="indent-8 h-[200px] max-w-[400px] overflow-y-auto break-words">{{ link.linkDescription
+                            <p class="indent-8 h-[200px] max-w-[400px] overflow-y-auto break-words">{{ linkDescription
                             }}</p>
                             <div class="flex justify-between">
                                 <div class="flex flex-col items-end space-y-5 pt-5">
                                     <div v-if="checkSelf()" class="flex space-x-4 items-center">
                                         <UpdateLinkDailog :open="updateLinkDailogOpen"
                                             @onClose="updateLinkDailogOpen = false"
-                                            @on-submit-success="emit('onSubmitSuccess')" :link="new Link({
+                                            @on-submit-success="() => { homeDataRefresh(); emit('onSubmitSuccess'); }" :link="new Link({
                                                 linkID: link['linkID'],
-                                                linkURL: link['linkURL'],
-                                                linkTitle: link['linkTitle'],
-                                                linkDescription: link['linkDescription'],
+                                                linkURL: linkURL,
+                                                linkTitle: linkTitle,
+                                                linkDescription: linkDescription,
                                                 creator: link['creator'],
-                                                hidden: link['hidden'],
+                                                hidden: hidden,
                                                 createdAt: link['createdAt']
                                             })">
                                             <button @click="() => {
@@ -170,5 +192,6 @@ async function handleLinkDelete(linkID: string) {
 
                 </DialogContent>
             </DialogOverlay>
-    </DialogPortal>
-</DialogRoot></template>
+        </DialogPortal>
+    </DialogRoot>
+</template>

@@ -13,7 +13,6 @@ import favoritesAPI from '../api/favorites';
 import AddLinkDailog from '../components/AddLinkDailog.vue';
 import linkDailog from '../components/linkDailog.vue';
 
-
 const toast = useToast();
 const links = ref([]);
 const addLinkDailogOpen = ref(false);
@@ -21,19 +20,27 @@ const linkDailogOpen = ref(false);
 
 const auth = ref(false);
 const favorites = ref([]);
-const currentLink = ref({});
+const currentLink = ref<any>({});
+provide('homeDataRefresh', async () => {
+    await updateAllData()
+})
 provide('auth', [auth, authStatusUpdate]);
 provide('favorites', favorites);
 provide('currentLink', currentLink);
 
-watch(auth, async () => {
+async function updateAllData() {
     await fetchMemberFavoritesData();
     await fetchCoffeeLinksData();
+    chooseLink(currentLink.value['linkID']);
+    sortLinks(links.value);
+}
+
+watch(auth, async () => {
+    await updateAllData();
 });
 
 function chooseLink(linkID: string) {
     currentLink.value = links.value.find((link: any) => link.linkID == linkID) ?? {};
-    linkDailogOpen.value = true;
 }
 
 async function fetchCoffeeLinksData() {
@@ -122,8 +129,10 @@ onMounted(async () => {
         <div v-if="links.length > 0" class="px-8 pt-8 grid lg:grid-cols-3 xl:grid-cols-4 w-screen sm:grid-cols-2 h-full 
             grid-cols-1 justify-start 2xl:justify-items-center overflow-auto scroll-smooth">
             <linkDailog :open="linkDailogOpen" @onClose="linkDailogOpen = false" @on-submit-success="coffeelinksUpdata">
-                <LinkCard @open-dailog-emit="(linkID: string) => chooseLink(linkID)"
-                    class="hover:scale-105 transition-transform duration-300 ease-in-out" v-for="link in links"
+                <LinkCard @open-dailog-emit="(linkID: string) => {
+                    chooseLink(linkID);
+                    linkDailogOpen = true;
+                }" class="hover:scale-105 transition-transform duration-300 ease-in-out" v-for="link in links"
                     :key="link['linkID']" :link="new Link({
                         linkID: link['linkID'],
                         linkURL: link['linkURL'],

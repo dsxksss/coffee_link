@@ -22,7 +22,7 @@ router.get('/', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
     const validateSchema = Joi.object({
         linkID: Joi.string().min(10).max(250).required(),
-        ratingScore: Joi.number().min(1).max(5).integer().required(),
+        ratingScore: Joi.string().min(1).max(4).required(),
     });
     try {
         const { linkID, ratingScore } = await validateSchema.validateAsync(req.body);
