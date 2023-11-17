@@ -27,7 +27,7 @@ const [auth, _] = inject('auth', ref<any>([]));
 const link = inject<any>('currentLink', {});
 
 function checkSelf(): boolean {
-    if(localStorage.getItem('authToken')==undefined){
+    if (localStorage.getItem('authToken') == undefined) {
         return false;
     }
     return jwtDecode<any>(localStorage.getItem("authToken")!).memberName === link.value.creator
@@ -35,28 +35,32 @@ function checkSelf(): boolean {
 
 const toast = useToast();
 
-function confirm(linkID:string) {
-        toast.error({
-            component: ToastYseOrNo,
-            props: {
-                "message": "Are you sure you want to delete this link?"
+function confirm(linkID: string) {
+    toast.error({
+        component: ToastYseOrNo,
+        props: {
+            "message": "Are you sure you want to delete this link?"
+        },
+        listeners: {
+            clickYse: () => {
+                handleLinkDelete(linkID);
+                emit('onClose'); 
+                toast.dismiss("deleteLink")
             },
-            listeners: {
-                clickYse: () => { handleLinkDelete(linkID); emit('onClose'); toast.dismiss("deleteLink") },
-                clickNo: () => {  toast.dismiss("deleteLink") }
-            },
-        }, {
-            closeOnClick: false,
-            timeout: false,
-            showCloseButtonOnHover: false,
-            closeButton: false,
-            // 根据该id来决定toast的身份
-            id: "deleteLink"
-        });
+            clickNo: () => { toast.dismiss("deleteLink") }
+        },
+    }, {
+        closeOnClick: false,
+        timeout: false,
+        showCloseButtonOnHover: false,
+        closeButton: false,
+        // 根据该id来决定toast的身份
+        id: "deleteLink"
+    });
 
 }
 
-async function handleLinkDelete(linkID:string) {
+async function handleLinkDelete(linkID: string) {
     console.log(linkID);
     const result = await linksAPI.deleteLink(linkID);
     const objData = JSON.parse(result.data);
@@ -94,7 +98,8 @@ async function handleLinkDelete(linkID:string) {
                                 <span class="space-x-3 max-w-[220px] flex justify-between items-end">
                                     <div class="space-x-1 flex items-end">
                                         <span>
-                                            <font-awesome-icon icon="fa-solid fa-fire" class="w-[25px] h-[25px] text-red-400" />
+                                            <font-awesome-icon icon="fa-solid fa-fire"
+                                                class="w-[25px] h-[25px] text-red-400" />
                                         </span>
                                         <span class="text-2xl">{{ link.points }}</span>
                                     </div>
@@ -107,7 +112,8 @@ async function handleLinkDelete(linkID:string) {
                                 </span>
                             </div>
                             <div><a :href="link.linkURL" target="_blank" class="truncate text-xl link">Coffee Link</a></div>
-                            <p class="indent-8 h-[200px] max-w-[400px] overflow-y-auto break-words">{{ link.linkDescription }}</p>
+                            <p class="indent-8 h-[200px] max-w-[400px] overflow-y-auto break-words">{{ link.linkDescription
+                            }}</p>
                             <div class="flex justify-between">
                                 <div class="flex flex-col items-end space-y-5 pt-5">
                                     <div v-if="checkSelf()" class="flex space-x-4 items-center">
@@ -137,7 +143,8 @@ async function handleLinkDelete(linkID:string) {
 
                                             </button>
                                         </UpdateLinkDailog>
-                                        <button @click="()=>confirm(link.linkID)" class="bg-base-100 btn btn-circle btn-ghost btn-lg btn-error">
+                                        <button @click="() => confirm(link.linkID)"
+                                            class="bg-base-100 btn btn-circle btn-ghost btn-lg btn-error">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -163,6 +170,5 @@ async function handleLinkDelete(linkID:string) {
 
                 </DialogContent>
             </DialogOverlay>
-        </DialogPortal>
-    </DialogRoot>
-</template>
+    </DialogPortal>
+</DialogRoot></template>

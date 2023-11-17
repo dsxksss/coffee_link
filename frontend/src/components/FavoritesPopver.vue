@@ -11,7 +11,6 @@ const emit = defineEmits(['onClose', 'onSubmitSuccess'])
 const toast = useToast();
 const favorites = inject('favorites', ref([]));
 
-
 async function deleteFavorite(linkID: string) {
   const result = await favoritesAPI.deleteFavorite(linkID);
   const objData = JSON.parse(result.data);
