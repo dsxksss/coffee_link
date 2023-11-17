@@ -64,7 +64,16 @@ async function fetchCoffeeLinksData() {
         if (result.status != 200) {
             return toast.error(msg);
         }
-        links.value = links.value.concat(authData)
+        
+        const newData = links.value.concat(authData)
+        const filterNewData = newData.filter((item: any, index: any, self: any) => {
+            return index === self.findIndex((t: any) => (
+                t.linkID === item.linkID
+            ));
+        });
+        if(filterNewData.length >= links.value.length){
+            links.value = filterNewData
+        }
     }
 }
 

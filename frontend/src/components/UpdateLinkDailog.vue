@@ -7,10 +7,9 @@ import {
 } from 'radix-vue';
 
 import linksAPI from '../api/links';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useToast } from "vue-toastification";
 import { Link } from '../interfaces/link';
-
 
 const props = defineProps({
     open: Boolean,
@@ -38,6 +37,13 @@ async function handleLinkUpdate() {
     emit('onSubmitSuccess')
     toast.success(msg);
 }
+
+watch(props,()=>{
+    linkURL.value = props.link!.linkURL;
+    linkTitle.value = props.link!.linkTitle;
+    linkDescription.value = props.link!.linkDescription;
+    hidden.value = props.link!.hidden;
+})
 
 onMounted(() => {
     linkURL.value = props.link!.linkURL;
