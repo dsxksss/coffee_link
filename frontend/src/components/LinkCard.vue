@@ -96,8 +96,8 @@ async function handleFavorites() {
         <span class="text-[20px]">{{ parseFloat(averageRatingScore!) <= 0.0 ? null : averageRatingScore }}</span>
         </span>
 
-        <div class="w-40 overflow-hidden text-ellipsis px-4 pt-3">
-          <span class="font-bold text-xl text-[#fff0dd]">{{ link!.linkTitle }}</span>
+        <div class="px-4 pt-3">
+          <p class="w-32 truncate font-bold text-xl text-[#fff0dd]">{{ link!.linkTitle }}</p>
         </div>
 
         <div class="text-ellipsis overflow-hidden px-4 pt-2">

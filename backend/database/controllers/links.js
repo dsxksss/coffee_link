@@ -28,7 +28,7 @@ router.get('/memberHiddenLinks', auth, async (req, res) => {
 // Create link
 router.post('/', auth, async (req, res) => {
     const validateSchema = Joi.object({
-        linkURL: Joi.string().pattern(new RegExp('^https?://.+?$')).min(5).max(250).required(),
+        linkURL: Joi.string().min(5).max(250).required(),
         linkTitle: Joi.string().min(2).max(250).required(),
         linkDescription: Joi.string().min(5).max(250).required(),
         hidden: Joi.boolean().required(),
@@ -46,7 +46,7 @@ router.post('/', auth, async (req, res) => {
 router.put('/', auth, async (req, res) => {
     const validateSchema = Joi.object({
         linkID: Joi.string().min(10).max(250).required(),
-        newLinkURL: Joi.string().pattern(new RegExp('^https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,30}(/[a-zA-Z0-9_\\-./?%&=]*)?$')).min(5).max(250).required(),
+        newLinkURL: Joi.string().min(5).max(250).required(),
         newLinkTitle: Joi.string().min(2).max(250).required(),
         newLinkDescription: Joi.string().min(5).max(250).required(),
         newHidden: Joi.boolean().required(),

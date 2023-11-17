@@ -112,7 +112,8 @@ async function handleLinkDelete(linkID: string) {
 
                         <div class="p-5 max-w-[400px] min-w-[400px] max-h-[500px] space-y-4">
                             <div class="flex justify-between items-center max-w-full">
-                                <p class="truncate max-w-[180px] text-2xl text-[#fff0dd]">{{ linkTitle }}</p>
+                                <div><a :href="link.linkURL" target="_blank" class="truncate text-xl link">Coffee Link</a></div>
+                                
                                 <span class="space-x-3 max-w-[220px] flex justify-between items-end">
                                     <div class="space-x-1 flex items-end">
                                         <span>
@@ -133,7 +134,7 @@ async function handleLinkDelete(linkID: string) {
                                     </RatingPopver>
                                 </span>
                             </div>
-                            <div><a :href="link.linkURL" target="_blank" class="truncate text-xl link">Coffee Link</a></div>
+                            <p class="h-[32px] max-w-[400px] overflow-y-auto break-words text-2xl text-[#fff0dd]">{{ linkTitle }}</p>
                             <p class="indent-8 h-[200px] max-w-[400px] overflow-y-auto break-words">{{ linkDescription
                             }}</p>
                             <div class="flex justify-between">
