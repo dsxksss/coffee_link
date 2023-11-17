@@ -91,6 +91,7 @@ async function handleLinkDelete(linkID: string) {
 
     emit('onClose');
     emit('onSubmitSuccess')
+    homeDataRefresh();
     toast.success(msg);
 }
 

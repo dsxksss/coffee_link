@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'radix-vue'
-import { inject, ref } from 'vue';
+import { inject, onMounted,  watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { extractDateTime } from '../utils/extractDateTime';
 import favoritesAPI from '../api/favorites';
@@ -9,7 +9,21 @@ import favoritesAPI from '../api/favorites';
 const emit = defineEmits(['onClose', 'onSubmitSuccess'])
 
 const toast = useToast();
-const favorites = inject('favorites', ref([]));
+const favoritesFromHome = inject<any>('favorites', []);
+const favorites = inject<any>('favorites', []);
+
+watch(favoritesFromHome, () => {
+  statusUpdate();
+})
+
+onMounted(() => {
+  statusUpdate();
+})
+
+function statusUpdate() {
+  console.log("update");
+  favorites.value = favoritesFromHome.value;
+}
 
 async function deleteFavorite(linkID: string) {
   const result = await favoritesAPI.deleteFavorite(linkID);
@@ -22,6 +36,7 @@ async function deleteFavorite(linkID: string) {
   }
 
   favorites.value = data;
+  emit("onSubmitSuccess");
 }
 
 </script>
@@ -42,7 +57,7 @@ async function deleteFavorite(linkID: string) {
           <div v-if="favorites.length > 0" v-for="favorite in favorites"
             class="flex relative justify-between px-4 py-5 mt-10 hover:bg-base-300 transition-all duration-200 rounded-xl">
             <div class="flex flex-col justify-betwee w-40 overflow-hidden">
-              <div class="w-40 overflow-hidden text-ellipsis text-lg"> {{ favorite['linkTitle'] }}</div>
+              <div class="truncate text-ellipsis text-lg"> {{ favorite['linkTitle'] }}</div>
               <div class="overflow-hidden text-ellipsis text-gray-500"> {{ extractDateTime(favorite['createdAt']) }}
               </div>
             </div>
