@@ -21,7 +21,6 @@ onMounted(() => {
 })
 
 function statusUpdate() {
-  console.log("update");
   favorites.value = favoritesFromHome.value;
 }
 

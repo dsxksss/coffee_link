@@ -107,11 +107,11 @@ async function handleLinkDelete(linkID: string) {
                     class="relative bg-base-100 shadow-2xl max-h-[500px] max-w-[800px] data-[state=open]:animate-contentShow  top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-xl focus:outline-none">
 
                     <div class="w-full flex flex-col md:flex-row rounded-lg">
-                        <img class="max-w-[400px] max-h-[500px] rounded-lg"
+                        <img class="max-w-[400px] w-[400px] max-h-[500px] rounded-lg"
                             :src="link.imgURL"
                             alt="Album" />
 
-                        <div class="p-5 max-w-[400px] min-w-[400px] max-h-[500px] space-y-4">
+                        <div class="p-5 max-w-[400px] w-[400px] max-h-[500px] space-y-4">
                             <div class="flex justify-between items-center max-w-full">
                                 <div><a :href="link.linkURL" target="_blank" class="truncate text-xl link">Coffee Link</a></div>
                                 
@@ -136,7 +136,7 @@ async function handleLinkDelete(linkID: string) {
                                 </span>
                             </div>
                             <p class="h-[32px] max-w-[400px] overflow-y-auto break-words text-2xl text-[#fff0dd]">{{ linkTitle }}</p>
-                            <p class="indent-8 h-[200px] max-w-[400px] overflow-y-auto break-words">{{ linkDescription
+                            <p class="indent-8 h-[250px] max-w-[400px] overflow-y-auto break-words">{{ linkDescription
                             }}</p>
                             <div class="flex justify-between">
                                 <div class="flex flex-col items-end space-y-5 pt-5">
