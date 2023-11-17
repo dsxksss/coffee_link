@@ -14,7 +14,7 @@ import AddLinkDailog from '../components/AddLinkDailog.vue';
 import linkDailog from '../components/linkDailog.vue';
 
 const toast = useToast();
-const links = ref([]);
+const links = ref<any[]>([]);
 const addLinkDailogOpen = ref(false);
 const linkDailogOpen = ref(false);
 
@@ -28,11 +28,21 @@ provide('auth', [auth, authStatusUpdate]);
 provide('favorites', favorites);
 provide('currentLink', currentLink);
 
+import imageData from "../api/imageData";
+function getRandomImage() {
+    const randomIndex = Math.floor(Math.random() * imageData.length);
+    return imageData[randomIndex];
+}
+
 async function updateAllData() {
     await fetchMemberFavoritesData();
     await fetchCoffeeLinksData();
     chooseLink(currentLink.value['linkID']);
     sortLinks(links.value);
+    links.value = links.value.map((x:any)=>{
+        x["imgURL"] = getRandomImage();
+        return x;
+    })
 }
 
 watch(auth, async () => {
@@ -76,6 +86,8 @@ async function fetchCoffeeLinksData() {
         }
     }
 }
+
+
 
 async function fetchMemberFavoritesData() {
     if (auth.value) {
@@ -151,6 +163,7 @@ onMounted(async () => {
                         hidden: link['hidden'],
                         createdAt: link['createdAt']
                     })" :points="link['points']" :averageRatingScore="link['averageRatingScore']"
+                    :imgURL="link['imgURL']"
                     :totalMembersOfRating="link['totalMembersOfRating']">
                 </LinkCard>
             </linkDailog>

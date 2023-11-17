@@ -10,6 +10,7 @@ const props = defineProps({
   points: Number,
   averageRatingScore: String,
   totalMembersOfRating: String,
+  imgURL:String,
 });
 
 const emit = defineEmits(['openDailogEmit']);
@@ -30,12 +31,6 @@ onMounted(() => {
   setTimeout(updateIsFavorite, 500)
 })
 
-
-// import imageData from "../api/imageData";
-// function getRandomImage() {
-//   const randomIndex = Math.floor(Math.random() * imageData.length);
-//   return imageData[randomIndex];
-// }
 
 async function addFavorite() {
   const result = await favoritesAPI.addFavorite(props.link!.linkID);
@@ -79,7 +74,7 @@ async function handleFavorites() {
   <div class="relative card w-60 bg-base-100 shadow-xl h-80 mr-4 mb-4 flex flex-col">
     <figure>
       <img class="w-full h-44 object-cover"
-        src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Linea_doubleespresso.jpg" alt="Shoes" />
+        :src="imgURL" alt="Shoes" />
     </figure>
 
     <div v-if="auth" class="absolute w-full h-44 right-0 opacity-0 hover:opacity-100 duration-200 transition-all">
@@ -110,7 +105,7 @@ async function handleFavorites() {
         </div>
 
         <div class="absolute bottom-3 left-5">
-          <font-awesome-icon icon="fa-solid fa-fire" />
+          <font-awesome-icon icon="fa-solid fa-fire" class=" text-red-400" />
           {{ points }}
         </div>
 

@@ -108,7 +108,7 @@ async function handleLinkDelete(linkID: string) {
 
                     <div class="w-full flex flex-col md:flex-row rounded-lg">
                         <img class="max-w-[400px] max-h-[500px] rounded-lg"
-                            src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Linea_doubleespresso.jpg"
+                            :src="link.imgURL"
                             alt="Album" />
 
                         <div class="p-5 max-w-[400px] min-w-[400px] max-h-[500px] space-y-4">
